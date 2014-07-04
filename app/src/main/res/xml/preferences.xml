@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (C) 2014 Murat Demir <mopened@gmail.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	android:key="@string/preferences_key"
+	android:title="@string/settings_activity">
+
+	<ListPreference android:id="@+id/prefs_folder"
+		android:key="@string/preferences_folder_key"
+		android:title="@string/preferences_folder_title"
+		android:summary="@string/preferences_folder_summary"
+		android:defaultValue="@string/preferences_folder_default"
+		android:entries="@array/preferences_folder_entries"
+		android:entryValues="@array/preferences_folder_values" />
+
+	<CheckBoxPreference android:id="@+id/prefs_recurse"
+		android:key="@string/preferences_recurse_key"
+		android:title="@string/preferences_recurse_title"
+		android:summary="@string/preferences_recurse_summary"
+		android:defaultValue="@string/preferences_recurse_default" />
+
+	<ListPreference android:id="@+id/prefs_duration"
+		android:key="@string/preferences_duration_key"
+		android:title="@string/preferences_duration_title"
+		android:summary="@string/preferences_duration_summary"
+		android:defaultValue="@string/preferences_duration_default"
+		android:entries="@array/preferences_duration_entries"
+		android:entryValues="@array/preferences_duration_values" />
+
+	<CheckBoxPreference android:id="@+id/prefs_random"
+		android:key="@string/preferences_random_key"
+		android:title="@string/preferences_random_title"
+		android:summary="@string/preferences_random_summary"
+		android:defaultValue="@string/preferences_random_default" />
+
+	<CheckBoxPreference android:id="@+id/prefs_rotate"
+		android:key="@string/preferences_rotate_key"
+		android:title="@string/preferences_rotate_title"
+		android:summary="@string/preferences_rotate_summary"
+		android:defaultValue="@string/preferences_rotate_default" />
+
+	<CheckBoxPreference android:id="@+id/prefs_scroll"
+		android:key="@string/preferences_scroll_key"
+		android:title="@string/preferences_scroll_title"
+		android:summary="@string/preferences_scroll_summary"
+		android:defaultValue="@string/preferences_scroll_default" />
+
+	<CheckBoxPreference android:key="@string/preferences_doubletap_key"
+		android:title="@string/preferences_doubletap_title"
+		android:summary="@string/preferences_doubletap_summary"
+		android:defaultValue="@string/preferences_doubletap_default" android:id="@+id/prefs_doubletap"/>
+
+	<CheckBoxPreference android:key="@string/preferences_screen_awake_key"
+		android:title="@string/preferences_screen_awake_title"
+		android:summary="@string/preferences_screen_awake_summary"
+		android:defaultValue="@string/preferences_screen_awake_default" android:id="@+id/prefs_screen_awake"/>
+
+	<Preference android:key="@string/preferences_about_key"
+		android:title="@string/preferences_about_title" />
+
+</PreferenceScreen>

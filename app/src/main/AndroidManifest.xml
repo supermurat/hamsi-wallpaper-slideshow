@@ -1,0 +1,67 @@
+<!--
+    Copyright (C) 2014 Murat Demir <mopened@gmail.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="wallpaperslideshow.hamsiapps.com.hamsiwallpaperslideshow"
+    android:installLocation="internalOnly">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
+    <uses-feature android:name="android.software.live_wallpaper" />
+
+    <application android:allowBackup="true"
+        android:label="@string/app_name"
+        android:icon="@drawable/hamsi_app_icon"
+        android:theme="@style/AppTheme">
+
+        <service android:name=".HamsiWallpaperSlideshow"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_WALLPAPER">
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+            </intent-filter>
+            <meta-data android:name="android.service.wallpaper"
+                android:resource="@xml/metadata" />
+        </service>
+
+        <activity android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:icon="@drawable/hamsi_app_icon"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".SettingsActivity"
+            android:label="@string/settings_activity"
+            android:icon="@drawable/hamsi_app_icon"
+            android:configChanges="orientation|keyboard|keyboardHidden"
+            android:excludeFromRecents="true"
+            android:exported="true">
+        </activity>
+
+        <activity android:name=".SelectFolderActivity"
+            android:label="@string/select_folder_activity"
+            android:icon="@drawable/hamsi_app_icon"
+            android:configChanges="orientation|keyboard|keyboardHidden"
+            android:excludeFromRecents="true" />
+
+    </application>
+
+</manifest>
