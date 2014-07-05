@@ -15,11 +15,7 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package wallpaperslideshow.hamsiapps.com.hamsiwallpaperslideshow;
-
-import java.io.File;
-import java.io.FileFilter;
-import java.util.Collection;
+package com.hamsiapps.hamsiwallpaperslideshow;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,11 +24,15 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.util.Collection;
+
 /**
  * Collection of utility functions used in this package.
  */
 public class BitmapUtil {
-	public static final int UNCONSTRAINED = -1;
+    public static final int UNCONSTRAINED = -1;
     private static final String TAG = "BitmapUtil";
 
     public BitmapUtil() {
@@ -42,9 +42,9 @@ public class BitmapUtil {
     // If a new bitmap is created, the original bitmap is recycled.
     public static Bitmap rotate(Bitmap b, int degrees, Matrix m) {
         if (degrees != 0 && b != null) {
-        	if (m == null) {
-        		m = new Matrix();
-        	}
+            if (m == null) {
+                m = new Matrix();
+            }
             m.setRotate(degrees,
                     (float) b.getWidth() / 2, (float) b.getHeight() / 2);
             try {
@@ -82,7 +82,7 @@ public class BitmapUtil {
      * request is 3. So we round up the sample size to avoid OOM.
      */
     public static int computeSampleSize(BitmapFactory.Options options,
-            int minSideLength, int maxNumOfPixels) {
+                                        int minSideLength, int maxNumOfPixels) {
         int initialSize = computeInitialSampleSize(options, minSideLength,
                 maxNumOfPixels);
 
@@ -100,7 +100,7 @@ public class BitmapUtil {
     }
 
     private static int computeInitialSampleSize(BitmapFactory.Options options,
-            int minSideLength, int maxNumOfPixels) {
+                                                int minSideLength, int maxNumOfPixels) {
         double w = options.outWidth;
         double h = options.outHeight;
 
@@ -108,7 +108,7 @@ public class BitmapUtil {
                 (int) Math.ceil(Math.sqrt(w * h / maxNumOfPixels));
         int upperBound = (minSideLength == UNCONSTRAINED) ? 128 :
                 (int) Math.min(Math.floor(w / minSideLength),
-                Math.floor(h / minSideLength));
+                        Math.floor(h / minSideLength));
 
         if (upperBound < lowerBound) {
             // return the larger one when there is no overlapping zone.
@@ -151,7 +151,7 @@ public class BitmapUtil {
                     deltaYHalf,
                     deltaXHalf + Math.min(targetWidth, source.getWidth()),
                     deltaYHalf + Math.min(targetHeight, source.getHeight()));
-            int dstX = (targetWidth  - src.width())  / 2;
+            int dstX = (targetWidth - src.width()) / 2;
             int dstY = (targetHeight - src.height()) / 2;
             Rect dst = new Rect(
                     dstX,
@@ -168,7 +168,7 @@ public class BitmapUtil {
         float bitmapHeightF = source.getHeight();
 
         float bitmapAspect = bitmapWidthF / bitmapHeightF;
-        float viewAspect   = (float) targetWidth / targetHeight;
+        float viewAspect = (float) targetWidth / targetHeight;
 
         if (bitmapAspect > viewAspect) {
             float scale = targetHeight / bitmapHeightF;
@@ -224,7 +224,7 @@ public class BitmapUtil {
      * @param uri
      */
     public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
-            String pathName, BitmapFactory.Options options) {
+                                    String pathName, BitmapFactory.Options options) {
         try {
             if (options == null) options = new BitmapFactory.Options();
 
@@ -234,7 +234,7 @@ public class BitmapUtil {
                     || options.outHeight == -1) {
                 return null;
             }
-            
+
             options.inSampleSize = computeSampleSize(
                     options, minSideLength, maxNumOfPixels);
             options.inJustDecodeBounds = false;
@@ -251,38 +251,38 @@ public class BitmapUtil {
         String ext = null;
         int i = name.lastIndexOf('.');
 
-        if (i > 0 &&  i < name.length() - 1) {
-            ext = name.substring(i+1).toLowerCase();
+        if (i > 0 && i < name.length() - 1) {
+            ext = name.substring(i + 1).toLowerCase();
         }
-        
+
         return ext;
     }
-    
+
     public static File[] listFiles(File directory, boolean recurse, FileFilter filter) {
-    	if (!recurse) {
-    		return directory.listFiles(filter);
-    	} else {
-    		Collection<File> mFiles = new java.util.LinkedList<File>();
+        if (!recurse) {
+            return directory.listFiles(filter);
+        } else {
+            Collection<File> mFiles = new java.util.LinkedList<File>();
             innerListFiles(mFiles, directory, filter);
             return (File[]) mFiles.toArray(new File[mFiles.size()]);
         }
     }
 
     public static void innerListFiles(Collection<File> files, File directory,
-            FileFilter filter) {
+                                      FileFilter filter) {
         File[] found = directory.listFiles();
         if (found != null) {
             for (int i = 0; i < found.length; i++) {
                 if (found[i].isDirectory()) {
                     innerListFiles(files, found[i], filter);
                 } else {
-                	File[] found2 = directory.listFiles((FileFilter) filter);
-                	for (int j = 0; j < found2.length; j++) {
-                		files.add(found2[j]);
-                	}
+                    File[] found2 = directory.listFiles((FileFilter) filter);
+                    for (int j = 0; j < found2.length; j++) {
+                        files.add(found2[j]);
+                    }
                 }
             }
         }
     }
-    
+
 }

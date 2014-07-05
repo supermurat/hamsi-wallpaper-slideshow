@@ -54,12 +54,6 @@
 		<TextView android:text="@string/how_to_enable_step1" android:id="@+id/textView2" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 
 		<TextView android:text="@string/how_to_enable_step2" android:id="@+id/textView3" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-
-		<TextView android:text="@string/how_to_enable_step3" android:id="@+id/textView4" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-
-		<TextView android:text="@string/how_to_enable_step4" android:id="@+id/textView5" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-
-		<TextView android:text="@string/how_to_enable_step5" android:id="@+id/textView6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dip"></TextView>
 		 
 	</LinearLayout>
 	</ScrollView>

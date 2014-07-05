@@ -19,8 +19,8 @@
     <string name="app_name">Hamsi Wallpaper Slideshow</string>
 	<string name="app_description">View your photos as slideshow on your home screen wallpaper at
         a defined interval</string>
-    <string name="settings_activity">Hamsi Wallpaper Slideshow settings</string>
-    <string name="select_folder_activity">Select an album</string>
+    <string name="settings_activity">Hamsi Wallpaper Slideshow Settings</string>
+    <string name="select_folder_activity">Select An Album</string>
     <string name="about_activity">About Hamsi Wallpaper Slideshow</string>
 	<string name="about_text"><![CDATA[
 		<p><b>Version: {VersionName}</b></p>
@@ -29,16 +29,14 @@
 		<a href="http://hamsiapps.com/Hamsi-Wallpaper-Slideshow">http://hamsiapps.com/Hamsi-Wallpaper-Slideshow</a>.</p>
 		<p>Note: This application is fork of <a href="https://code.google.com/p/android-wallpaper-slideshow/">Wallpaper Slideshow by birbeck</a>.<br>
 		I forked because I couldn`t get any response from developer. Also he don`t develop this application for 3 years.<br>
-		This is first release after fork so I only fixed a few bugs.</p>
+		This is first release after fork so I only fixed a few bugs and improved a few things.</p>
 		<p>&copy; 2014 <i>Hamsi Apps</i>.</p>
 		]]></string>
-    <string name="warning_scroll">All photos will be stretched to fill your home screens. If you use low resolution or portrait style photos, this can result in poor image quality. For best results, use wallpaper scrolling with desktop sized photos (640x480, 1024x768, etc).</string>
-    <string name="set_wallpaper">Set wallpaper</string>
+    <string name="warning_scroll">All photos will be stretched to fill your home screens. If you use low resolution or portrait style photos, this can result in poor image quality. For best results, use wallpaper scrolling with desktop sized photos (640x480, 1024x768, 1280x720, etc).</string>
+    <string name="set_wallpaper">Set Wallpaper</string>
     <string name="settings">Settings</string>
     <string name="how_to_enable">Hamsi Wallpaper Slideshow is a live wallpaper. Live wallpapers do not normally contain a launcher icon. To set a live wallpaper as your home screen background, perform the following steps:</string>
-    <string name="how_to_enable_step1"><![CDATA[Step 1: From Home Screen, press "Menu"]]></string>
-    <string name="how_to_enable_step2"><![CDATA[Step 2: Press "Wallpaper", then press "Live Wallpapers"]]></string>
-    <string name="how_to_enable_step3"><![CDATA[Step 3: Select the Live Wallpaper of choice]]></string>
-    <string name="how_to_enable_step4"><![CDATA[Step 4: Press "Set wallpaper"]]></string>
-    <string name="how_to_enable_step5"><![CDATA[To open the wallpaper chooser now, press Set wallpaper]]></string>
+    <string name="how_to_enable_step1"><![CDATA[Step 1: press "Set Wallpaper"]]></string>
+    <string name="how_to_enable_step2"><![CDATA[Step 2: press "Set wallpaper" again on
+    next Activity]]></string>
 </resources>

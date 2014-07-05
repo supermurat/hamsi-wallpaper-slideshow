@@ -15,26 +15,27 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package wallpaperslideshow.hamsiapps.com.hamsiwallpaperslideshow;
+package com.hamsiapps.hamsiwallpaperslideshow;
 
 import android.graphics.Bitmap;
 
 public class ThumbnailUtilsWrapper {
 
-	static {
-		try {
-			Class.forName("android.media.ThumbnailUtils");
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	public static void checkAvailable() { }
+    static {
+        try {
+            Class.forName("android.media.ThumbnailUtils");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	public static Bitmap extractThumbnail(final Bitmap source, final int width,
-			final int height) {
-		return android.media.ThumbnailUtils.extractThumbnail(source, width,
-				height, android.media.ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
-	}
+    public static void checkAvailable() {
+    }
+
+    public static Bitmap extractThumbnail(final Bitmap source, final int width,
+                                          final int height) {
+        return android.media.ThumbnailUtils.extractThumbnail(source, width,
+                height, android.media.ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+    }
 
 }

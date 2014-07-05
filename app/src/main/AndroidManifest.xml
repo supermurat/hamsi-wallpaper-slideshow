@@ -15,7 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="wallpaperslideshow.hamsiapps.com.hamsiwallpaperslideshow"
+    package="com.hamsiapps.hamsiwallpaperslideshow"
     android:installLocation="internalOnly">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -40,8 +40,7 @@
 
         <activity android:name=".MainActivity"
             android:label="@string/app_name"
-            android:icon="@drawable/hamsi_app_icon"
-            android:screenOrientation="portrait">
+            android:icon="@drawable/hamsi_app_icon">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

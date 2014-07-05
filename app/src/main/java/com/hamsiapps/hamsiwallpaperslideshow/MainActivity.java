@@ -15,7 +15,7 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package wallpaperslideshow.hamsiapps.com.hamsiwallpaperslideshow;
+package com.hamsiapps.hamsiwallpaperslideshow;
 
 import android.app.Activity;
 import android.app.WallpaperManager;
@@ -27,37 +27,36 @@ import android.view.View;
 import android.widget.Button;
 
 public class MainActivity extends Activity {
-	
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main_activity);
-		
-		final Button set_wallpaper = (Button)findViewById(R.id.set_wallpaper);
-		set_wallpaper.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
+
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main_activity);
+
+        final Button set_wallpaper = (Button) findViewById(R.id.set_wallpaper);
+        set_wallpaper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 Intent i = new Intent();
-                if(Build.VERSION.SDK_INT > 15){
+                if (Build.VERSION.SDK_INT > 15) {
                     i.setAction(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
                     String p = HamsiWallpaperSlideshow.class.getPackage().getName();
                     String c = HamsiWallpaperSlideshow.class.getCanonicalName();
                     i.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT, new ComponentName(p, c));
-                }
-                else{
+                } else {
                     i.setAction(WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER);
                 }
                 startActivityForResult(i, 0);
-			}
-		});
+            }
+        });
 
-		final Button configure = (Button)findViewById(R.id.configure);
-		configure.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
-				startActivity(i);
-			}
-		});
-	}
+        final Button configure = (Button) findViewById(R.id.configure);
+        configure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(i);
+            }
+        });
+    }
 
 }

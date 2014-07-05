@@ -15,15 +15,15 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package wallpaperslideshow.hamsiapps.com.hamsiwallpaperslideshow;
+package com.hamsiapps.hamsiwallpaperslideshow;
 
 import android.graphics.Bitmap;
 
 public class FolderListItem {
-	Bitmap image;
-	String text1;
-	String text2;
-	
-	public FolderListItem() {
-	}
+    Bitmap image;
+    String text1;
+    String text2;
+
+    public FolderListItem() {
+    }
 }

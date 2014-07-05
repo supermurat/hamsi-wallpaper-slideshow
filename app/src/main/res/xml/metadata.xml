@@ -18,4 +18,4 @@
 <wallpaper xmlns:android="http://schemas.android.com/apk/res/android"
 	android:description="@string/app_description"
 	android:thumbnail="@drawable/hamsi_app_icon"
-	android:settingsActivity="wallpaperslideshow.hamsiapps.com.hamsiwallpaperslideshow.SettingsActivity" />
+	android:settingsActivity="com.hamsiapps.hamsiwallpaperslideshow.SettingsActivity" />

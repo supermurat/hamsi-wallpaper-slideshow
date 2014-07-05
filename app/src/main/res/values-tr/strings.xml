@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Murat Demir <mopened@gmail.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+    <string name="app_name">Hamsi Wallpaper Slideshow</string>
+	<string name="app_description">Belirlediğiniz sıklıkla ana ekran ve kilit ekranlarınızın
+        duvar kağıtlarını otomatik olarak değiştirir</string>
+    <string name="settings_activity">Hamsi Wallpaper Slideshow Ayarları</string>
+    <string name="select_folder_activity">Bir Albüm Seçiniz</string>
+    <string name="about_activity">Hamsi Wallpaper Slideshow Hakkında</string>
+	<string name="about_text"><![CDATA[
+		<p><b>Sürüm: {VersionName}</b></p>
+		<p>Eğer beğendiyseniz lütfen Google Play`de yorum yapınız.</p>
+		<p>Ayrıca projemizin web sitesiniz ziyaret edebilirsiniz :<br>
+		<a href="http://hamsiapps.com/Hamsi-Wallpaper-Slideshow">http://hamsiapps.com/Hamsi-Wallpaper-Slideshow</a>.</p>
+		<p>Not: Bu uygulama <a href="https://code.google.com/p/android-wallpaper-slideshow/">
+		Wallpaper Slideshow (birbeck)</a> uygulamasının çatallamasıdır.<br>
+		Geliştiriciden hiç bir cevap alamadığım için projeyi çatalladım.
+		Ayrıca geliştirici 3 yıldır hiç bir geliştirme yapmamıştı.<br>
+		Bu sürüm çatallamadan sonraki ilk sürümdür, bu yüzden sadece birkaç hata giderme ve
+		ufak tefek düzeltmeler yaptım.</p>
+		<p>&copy; 2014 <i>Hamsi Apps</i>.</p>
+		]]></string>
+    <string name="warning_scroll">Tüm resimler ana ekranı doldurmak üzere uzatılacaktır. Eğer
+        düşük çözünürlüklü veya portre tarzında resimler kullanıyorsanız, düşük görsel kalitesi
+        alabilirsiniz. En iyi sonuç için, ekranınızın çözünürlüğüne uygun olarak boyutlandırılmış
+        resimler kullanınız. Örneğin : (640x480, 1024x768, 1280x720, vs)</string>
+    <string name="set_wallpaper">Uygula</string>
+    <string name="settings">Ayarlar</string>
+    <string name="how_to_enable">Hamsi Wallpaper Slideshow canlı duvar kağıdıdır. Normalde canlı
+        duvar kağıtları başlatıcı simgesi içermezler. Bu uygulamayı canlı duvar kağıdı olarak
+        kullanmak isterseniz lütfen aşağıdaki işlem basamaklarını uygulayınız.</string>
+    <string name="how_to_enable_step1"><![CDATA[İşlem 1: "Uygula" butonuna dokununuz]]></string>
+    <string name="how_to_enable_step2"><![CDATA[İşlem 2: Açılan duvar kağıdı seçicisi ekranında
+         "Duvar kağıdını ayarla" butonuna dokununuz]]></string>
+</resources>
