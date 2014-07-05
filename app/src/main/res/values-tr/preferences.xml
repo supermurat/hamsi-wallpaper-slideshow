@@ -19,15 +19,16 @@
 	<string name="preferences_key">preferences</string>
 
     <string name="preferences_folder_key">folder</string>
-    <string name="preferences_folder_title">Folder</string>
-	<string name="preferences_folder_summary">Folder containing photos to use in slideshow</string>
-    <string name="preferences_folder_default">/sdcard/DCIM/100MEDIA</string>
+    <string name="preferences_folder_title">Dizin - Albüm</string>
+	<string name="preferences_folder_summary">Slayt gösterisi için kullanılacak resimlerin
+        bulunduğu albüm</string>
+    <string name="preferences_folder_default">/storage/sdcard0/DCIM</string>
     <string-array name="preferences_folder_entries" />
     <string-array name="preferences_folder_values" />
 
     <string name="preferences_duration_key">duration</string>
-    <string name="preferences_duration_title">Duration</string>
-	<string name="preferences_duration_summary">Duration to display each photo</string>
+    <string name="preferences_duration_title">Gösterim Süresi</string>
+	<string name="preferences_duration_summary">Her resmin gösterim süresi</string>
     <string name="preferences_duration_default">60000</string>
     <string-array name="preferences_duration_entries">
     	<item>15 seconds</item>
@@ -55,41 +56,45 @@
     </string-array>
 
     <string name="preferences_random_key">random</string>
-    <string name="preferences_random_title">Random</string>
-	<string name="preferences_random_summary">Display photos in random order instead of sequentially</string>
+    <string name="preferences_random_title">Rastgele</string>
+	<string name="preferences_random_summary">Resimleri belli bir sıra yerine rastgele olarak
+        göster</string>
     <string name="preferences_random_default">true</string>
 
     <string name="preferences_rotate_key">rotate</string>
-    <string name="preferences_rotate_title">Do not rotate</string>
-	<string name="preferences_rotate_summary">Keep original screen orientation of photos</string>
+    <string name="preferences_rotate_title">Resimleri Çevirme</string>
+	<string name="preferences_rotate_summary">Resimlerin gerçek ekran yönünü değiştirme</string>
     <string name="preferences_rotate_default">false</string>
 
     <string name="preferences_scroll_key">scroll</string>
-    <string name="preferences_scroll_title">Scroll wallpaper</string>
-	<string name="preferences_scroll_summary">Scroll wallpaper when changing home screens</string>
+    <string name="preferences_scroll_title">Duvar Kağıdını Kaydır</string>
+	<string name="preferences_scroll_summary">Ana ekranı değiştirirken resimleride kaydır</string>
     <string name="preferences_scroll_default">false</string>
 
     <string name="preferences_recurse_key">recurse</string>
-    <string name="preferences_recurse_title">Recurse folder</string>
-	<string name="preferences_recurse_summary">Include photos from sub-folders of selected folder</string>
+    <string name="preferences_recurse_title">Alt Dizinleri - Albümleri de Göster</string>
+	<string name="preferences_recurse_summary">Seçilen albümdeki alt albümlere ait resimleri de
+        göster</string>
     <string name="preferences_recurse_default">false</string>
 
     <string name="preferences_doubletap_key">doubletap</string>
-    <string name="preferences_doubletap_title">Enable touch events</string>
-	<string name="preferences_doubletap_summary">Double tap screen to skip to the next photo</string>
+    <string name="preferences_doubletap_title">Dokunma Eylemlerini Aktifleştir</string>
+	<string name="preferences_doubletap_summary">İki kere dokunulursa bir sonraki resim
+        gösterilir</string>
     <string name="preferences_doubletap_default">true</string>
 
     <string name="preferences_enlarge_key">enlarge</string>
-    <string name="preferences_enlarge_title">Do not enlarge</string>
-	<string name="preferences_enlarge_summary">Do not enlarge photos to fill screen</string>
+    <string name="preferences_enlarge_title">Genişletme</string>
+	<string name="preferences_enlarge_summary">Ekranı doldurmak için resimleri genişletme</string>
     <string name="preferences_enlarge_default">false</string>
 
     <string name="preferences_screen_awake_key">screen_awake</string>
-    <string name="preferences_screen_awake_title">Change on screen awake</string>
-	<string name="preferences_screen_awake_summary">Change wallpaper each time the screen is turned on</string>
+    <string name="preferences_screen_awake_title">Ekran Uyandırılınca Resmi Değiştir</string>
+	<string name="preferences_screen_awake_summary">Her ekran açıldığında resmi de
+        değiştir</string>
     <string name="preferences_screen_awake_default">false</string>
 
     <string name="preferences_about_key">about</string>
-    <string name="preferences_about_title">About Hamsi Wallpaper Slideshow</string>
+    <string name="preferences_about_title">Hamsi Wallpaper Slideshow Hakkında</string>
  
 </resources>
