@@ -49,7 +49,6 @@ import java.io.FileOutputStream;
 
 public class HamsiWallpaperSlideshow extends WallpaperService {
 
-    public static final String TAG = "Hamsi Wallpaper Slideshow";
     public static final String SHARED_PREFS_NAME = "preferences";
     public static final FileFilter ImageFilter = new FileFilter() {
         public boolean accept(File dir) {
@@ -59,12 +58,8 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
 
             String ext = BitmapUtil.getExtension(dir.getName());
             if (ext != null) {
-                if (ext.equals("jpg") || ext.equals("jpeg")
-                        || ext.equals("png") || ext.equals("gif")) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return ext.equals("jpg") || ext.equals("jpeg")
+                        || ext.equals("png") || ext.equals("gif");
             }
             return false;
         }
@@ -307,7 +302,7 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
             } else if (key.equals(res.getString(R.string.preferences_scroll_key))) {
                 mScroll = sharedPreferences.getBoolean(key,
                         Boolean.valueOf(res.getString(R.string.preferences_scroll_default)));
-                if (mScroll == true) {
+                if (mScroll) {
                     mLastDrawTime = 0;
                 }
             } else if (key.equals(res.getString(R.string.preferences_recurse_key))) {
@@ -372,8 +367,7 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
                                         R.drawable.hamsi_back);
                             }
                             File outputFile = File.createTempFile("Hamsi-", ".png", getCacheDir());
-                            FileOutputStream out;
-                            out = new FileOutputStream(outputFile);
+                            FileOutputStream out = new FileOutputStream(outputFile);
                             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
                             out.flush();
                             out.close();
@@ -450,7 +444,7 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
             // Reschedule the next redraw
             mHandler.removeCallbacks(mWorker);
             if (mVisible) {
-                mHandler.postDelayed(mWorker, 1000 / 2);
+                mHandler.postDelayed(mWorker, 5000);
             }
         }
 
@@ -510,10 +504,6 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
     }
 
     class NoImagesInFolderException extends Exception {
-        private static final long serialVersionUID = 1L;
-    }
-
-    class MediaNotReadyException extends Exception {
         private static final long serialVersionUID = 1L;
     }
 
