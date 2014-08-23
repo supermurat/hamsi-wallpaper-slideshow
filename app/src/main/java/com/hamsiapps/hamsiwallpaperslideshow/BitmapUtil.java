@@ -17,6 +17,7 @@
 
 package com.hamsiapps.hamsiwallpaperslideshow;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -241,6 +242,30 @@ public class BitmapUtil {
             //options.inDither = false;
             //options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             return BitmapFactory.decodeFile(pathName, options);
+        } catch (OutOfMemoryError ex) {
+            Log.e(TAG, "Got oom exception ", ex);
+            return null;
+        }
+    }
+
+    public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
+                                    Resources res, int id, BitmapFactory.Options options) {
+        try {
+            if (options == null) options = new BitmapFactory.Options();
+
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeResource(res, id, options);
+            if (options.mCancel || options.outWidth == -1
+                    || options.outHeight == -1) {
+                return null;
+            }
+
+            options.inSampleSize = computeSampleSize(
+                    options, minSideLength, maxNumOfPixels);
+            options.inJustDecodeBounds = false;
+            //options.inDither = false;
+            //options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            return BitmapFactory.decodeResource(res, id, options);
         } catch (OutOfMemoryError ex) {
             Log.e(TAG, "Got oom exception ", ex);
             return null;

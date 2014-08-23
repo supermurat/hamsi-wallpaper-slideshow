@@ -26,7 +26,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -360,11 +359,9 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
                         try {
                             Bitmap bitmap;
                             if (getRotation() == Configuration.ORIENTATION_LANDSCAPE) {
-                                bitmap = BitmapFactory.decodeResource(getResources(),
-                                        R.drawable.hamsi_back_land);
+                                bitmap = getFormattedBitmap(R.drawable.hamsi_back_land);
                             } else {
-                                bitmap = BitmapFactory.decodeResource(getResources(),
-                                        R.drawable.hamsi_back);
+                                bitmap = getFormattedBitmap(R.drawable.hamsi_back);
                             }
                             File outputFile = File.createTempFile("Hamsi-", ".png", getCacheDir());
                             FileOutputStream out = new FileOutputStream(outputFile);
@@ -484,6 +481,42 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
             return bitmap;
         }
 
+        private Bitmap getFormattedBitmap(int id) {
+            int targetWidth = (mScroll) ? mMinWidth : mWidth;
+            int targetHeight = (mScroll) ? mMinHeight : mHeight;
+
+            Bitmap bitmap = BitmapUtil.makeBitmap(Math.max(mMinWidth, mMinHeight),
+                    mMinWidth * mMinHeight, getResources(), id, null);
+
+            if (bitmap == null) {
+                return Bitmap.createBitmap(targetWidth, targetHeight,
+                        Bitmap.Config.ARGB_8888);
+            }
+
+            int width = bitmap.getWidth();
+            int height = bitmap.getHeight();
+
+            // Rotate
+            if (mRotate) {
+                int screenOrientation = getResources().getConfiguration().orientation;
+                if (width > height
+                        && screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                    bitmap = BitmapUtil.rotate(bitmap, 90, mScaler);
+                } else if (height > width
+                        && screenOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    bitmap = BitmapUtil.rotate(bitmap, -90, mScaler);
+                }
+            }
+
+            // Scale bitmap
+            if (width != targetWidth || height != targetHeight) {
+                bitmap = BitmapUtil.transform(mScaler, bitmap,
+                        targetWidth, targetHeight, true, true);
+            }
+
+            return bitmap;
+        }
+
         public int getRotation(){
             Point p = new Point();
             if (Build.VERSION.SDK_INT > 12 ) {
@@ -501,6 +534,7 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
                 return Configuration.ORIENTATION_LANDSCAPE;
             }
         }
+
     }
 
     class NoImagesInFolderException extends Exception {
