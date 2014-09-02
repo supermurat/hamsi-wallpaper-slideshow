@@ -219,11 +219,6 @@ public class BitmapUtil {
         return b2;
     }
 
-    /**
-     * Make a bitmap from a given Uri.
-     *
-     * @param uri
-     */
     public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
                                     String pathName, BitmapFactory.Options options) {
         try {

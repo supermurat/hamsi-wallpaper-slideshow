@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Murat Demir <mopened@gmail.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+    <string name="app_name">Hamsi Wallpaper Slideshow</string>
+	<string name="app_description">View your photos as slideshow on your home screen wallpaper at
+        a defined interval</string>
+    <string name="settings_activity">Hamsi Wallpaper Slideshow Settings</string>
+    <string name="select_folder_activity">Select An Album</string>
+    <string name="about_activity">About Hamsi Wallpaper Slideshow</string>
+	<string name="about_text"><![CDATA[
+		<p><b>Version: {VersionName}</b></p>
+		<p>If you like Hamsi Wallpaper Slideshow, please leave a comment on the Google Play.</p>
+		<p>Also you can visit project site :<br>
+		<a href="http://hamsiapps.com/Hamsi-Wallpaper-Slideshow">http://hamsiapps.com/en/Hamsi-Wallpaper-Slideshow</a>.</p>
+		<p>Note: This application is fork of <a href="https://code.google.com/p/android-wallpaper-slideshow/">Wallpaper Slideshow by birbeck</a>.<br>
+		I forked because I couldn`t get any response from developer. Also he don`t develop this application for 3 years.<br>
+		This is first release after fork so I only fixed a few bugs and improved a few things.</p>
+		<p>&copy; 2014 <i>Hamsi Apps</i>.</p>
+		]]></string>
+    <string name="warning_scroll">All photos will be stretched to fill your home screens. If you use low resolution or portrait style photos, this can result in poor image quality. For best results, use wallpaper scrolling with desktop sized photos (640x480, 1024x768, 1280x720, etc).</string>
+    <string name="set_wallpaper">Set Wallpaper</string>
+    <string name="settings">Settings</string>
+    <string name="how_to_enable">Hamsi Wallpaper Slideshow is a live wallpaper. Live wallpapers do not normally contain a launcher icon. To set a live wallpaper as your home screen background, perform the following steps:</string>
+    <string name="how_to_enable_step1"><![CDATA[Step 1: press "Set Wallpaper"]]></string>
+    <string name="how_to_enable_step2"><![CDATA[Step 2: press "Set wallpaper" again on
+    next Activity]]></string>
+
+    <string name="preferences_key">preferences</string>
+
+    <string name="preferences_folder_key">folder</string>
+    <string name="preferences_folder_title">Folder</string>
+    <string name="preferences_folder_summary">Folder containing photos to use in slideshow</string>
+    <string name="preferences_folder_default">/sdcard/DCIM/100MEDIA</string>
+    <string-array name="preferences_folder_entries" />
+    <string-array name="preferences_folder_values" />
+
+    <string name="preferences_duration_key">duration</string>
+    <string name="preferences_duration_title">Duration</string>
+    <string name="preferences_duration_summary">Duration to display each photo</string>
+    <string name="preferences_duration_default">60000</string>
+    <string-array name="preferences_duration_entries">
+        <item>15 seconds</item>
+        <item>30 seconds</item>
+        <item>1 minute</item>
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>6 hours</item>
+        <item>12 hours</item>
+        <item>1 day</item>
+        <item>Manual</item>
+    </string-array>
+    <string-array name="preferences_duration_values">
+        <item>15000</item>
+        <item>30000</item>
+        <item>60000</item>
+        <item>900000</item>
+        <item>1800000</item>
+        <item>3600000</item>
+        <item>21600000</item>
+        <item>43200000</item>
+        <item>86400000</item>
+        <item>0</item>
+    </string-array>
+
+    <string name="preferences_random_key">random</string>
+    <string name="preferences_random_title">Random</string>
+    <string name="preferences_random_summary">Display photos in random order instead of sequentially</string>
+    <string name="preferences_random_default">true</string>
+
+    <string name="preferences_rotate_key">rotate</string>
+    <string name="preferences_rotate_title">Do not rotate</string>
+    <string name="preferences_rotate_summary">Keep original screen orientation of photos</string>
+    <string name="preferences_rotate_default">false</string>
+
+    <string name="preferences_scroll_key">scroll</string>
+    <string name="preferences_scroll_title">Scroll wallpaper</string>
+    <string name="preferences_scroll_summary">Scroll wallpaper when changing home screens</string>
+    <string name="preferences_scroll_default">false</string>
+
+    <string name="preferences_recurse_key">recurse</string>
+    <string name="preferences_recurse_title">Recurse folder</string>
+    <string name="preferences_recurse_summary">Include photos from sub-folders of selected folder</string>
+    <string name="preferences_recurse_default">false</string>
+
+    <string name="preferences_doubletap_key">doubletap</string>
+    <string name="preferences_doubletap_title">Enable touch events</string>
+    <string name="preferences_doubletap_summary">Double tap screen to skip to the next photo</string>
+    <string name="preferences_doubletap_default">true</string>
+
+    <string name="preferences_enlarge_key">enlarge</string>
+    <string name="preferences_enlarge_title">Do not enlarge</string>
+    <string name="preferences_enlarge_summary">Do not enlarge photos to fill screen</string>
+    <string name="preferences_enlarge_default">false</string>
+
+    <string name="preferences_screen_awake_key">screen_awake</string>
+    <string name="preferences_screen_awake_title">Change on screen awake</string>
+    <string name="preferences_screen_awake_summary">Change wallpaper each time the screen is turned on</string>
+    <string name="preferences_screen_awake_default">false</string>
+
+    <string name="preferences_about_key">about</string>
+    <string name="preferences_about_title">About Hamsi Wallpaper Slideshow</string>
+
+</resources>

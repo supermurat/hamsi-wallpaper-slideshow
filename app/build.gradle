@@ -1,21 +1,32 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+    }
     compileSdkVersion 20
-    buildToolsVersion "20.0.0"
-
+    buildToolsVersion '20.0.0'
     defaultConfig {
-        applicationId "com.hamsiapps.hamsiwallpaperslideshow"
+        applicationId 'com.hamsiapps.hamsiwallpaperslideshow'
         minSdkVersion 10
         targetSdkVersion 20
-        versionCode 2
-        versionName "2"
+        versionCode 21
+        versionName '2.1'
+    }
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src/java']
+            resources.srcDirs = ['src/res']
+            res.srcDirs = ['src/res']
+        }
     }
     buildTypes {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    productFlavors {
     }
 }
 
