@@ -32,7 +32,8 @@
 		This is first release after fork so I only fixed a few bugs and improved a few things.</p>
 		<p>&copy; 2014 <i>Hamsi Apps</i>.</p>
 		]]></string>
-    <string name="warning_scroll">All photos will be stretched to fill your home screens. If you use low resolution or portrait style photos, this can result in poor image quality. For best results, use wallpaper scrolling with desktop sized photos (640x480, 1024x768, 1280x720, etc).</string>
+    <string name="warning_scroll">All photos will be stretched to fill your home screens. If you use low resolution or portrait style photos, this can result in poor image quality. For best results, use wallpaper scrolling with desktop sized photos (640x480, 1024x768, 1280x720,
+        etc). Note: This feature won't work properly in some devices (TouchWiz). </string>
     <string name="set_wallpaper">Set Wallpaper</string>
     <string name="settings">Settings</string>
     <string name="how_to_enable">Hamsi Wallpaper Slideshow is a live wallpaper. Live wallpapers do not normally contain a launcher icon. To set a live wallpaper as your home screen background, perform the following steps:</string>

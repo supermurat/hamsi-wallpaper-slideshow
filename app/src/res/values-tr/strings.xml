@@ -38,7 +38,8 @@
     <string name="warning_scroll">Tüm resimler ana ekranı doldurmak üzere uzatılacaktır. Eğer
         düşük çözünürlüklü veya portre tarzında resimler kullanıyorsanız, düşük görsel kalitesi
         alabilirsiniz. En iyi sonuç için, ekranınızın çözünürlüğüne uygun olarak boyutlandırılmış
-        resimler kullanınız. Örneğin : (640x480, 1024x768, 1280x720, vs)</string>
+        resimler kullanınız. Örneğin : (640x480, 1024x768, 1280x720,
+        vs) Not: Bazı aygıtlarda bu özellik olması gerektiği gibi çalışmayacaktır (TouchWiz).</string>
     <string name="set_wallpaper">Uygula</string>
     <string name="settings">Ayarlar</string>
     <string name="how_to_enable">Hamsi Wallpaper Slideshow canlı duvar kağıdıdır. Normalde canlı

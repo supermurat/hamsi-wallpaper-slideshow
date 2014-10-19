@@ -80,8 +80,7 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
         return new WallpaperEngine();
     }
 
-    class WallpaperEngine extends Engine
-            implements OnSharedPreferenceChangeListener {
+    class WallpaperEngine extends Engine implements OnSharedPreferenceChangeListener {
 
         // Canvas stuff
         private final Paint mPaint = new Paint();
@@ -130,6 +129,10 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
 
             // Read the preferences
             onSharedPreferenceChanged(mPrefs, null);
+            if (Build.VERSION.SDK_INT >= 15 ) {
+                setOffsetNotificationsEnabled(true);
+            }
+            setTouchEventsEnabled(true);
 
             doubleTapDetector = new GestureDetector(HamsiWallpaperSlideshow.this, new SimpleOnGestureListener() {
                 @Override
@@ -419,19 +422,17 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
 
             try {
                 if (c != null) {
-                    int xPos;
-                    int yPos;
+                    int xPos = 0;
+                    int yPos = 0;
                     if (mScroll) {
                         xPos = 0 - (int) (mWidth * mXOffset);
                         yPos = 0 - (int) (mHeight * mYOffset);
-                    } else {
-                        xPos = 0;
-                        yPos = 0;
                     }
                     try {
                         c.drawColor(Color.BLACK);
                         c.drawBitmap(mBitmap, xPos, yPos, mPaint);
-                    } catch (Throwable t) {
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             } finally {
@@ -445,12 +446,9 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
             }
         }
 
-        private Bitmap getFormattedBitmap(String file) {
+        private Bitmap getFormattedBitmap(Bitmap bitmap) {
             int targetWidth = (mScroll) ? mMinWidth : mWidth;
             int targetHeight = (mScroll) ? mMinHeight : mHeight;
-
-            Bitmap bitmap = BitmapUtil.makeBitmap(Math.max(mMinWidth, mMinHeight),
-                    mMinWidth * mMinHeight, file, null);
 
             if (bitmap == null) {
                 return Bitmap.createBitmap(targetWidth, targetHeight,
@@ -477,44 +475,19 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
                 bitmap = BitmapUtil.transform(mScaler, bitmap,
                         targetWidth, targetHeight, true, true);
             }
-
             return bitmap;
         }
 
-        private Bitmap getFormattedBitmap(int id) {
-            int targetWidth = (mScroll) ? mMinWidth : mWidth;
-            int targetHeight = (mScroll) ? mMinHeight : mHeight;
+        private Bitmap getFormattedBitmap(String file) {
+            Bitmap bitmap = BitmapUtil.makeBitmap(Math.max(mMinWidth, mMinHeight),
+                    mMinWidth * mMinHeight, file, null);
+            return getFormattedBitmap(bitmap);
+        }
 
+        private Bitmap getFormattedBitmap(int id) {
             Bitmap bitmap = BitmapUtil.makeBitmap(Math.max(mMinWidth, mMinHeight),
                     mMinWidth * mMinHeight, getResources(), id, null);
-
-            if (bitmap == null) {
-                return Bitmap.createBitmap(targetWidth, targetHeight,
-                        Bitmap.Config.ARGB_8888);
-            }
-
-            int width = bitmap.getWidth();
-            int height = bitmap.getHeight();
-
-            // Rotate
-            if (mRotate) {
-                int screenOrientation = getResources().getConfiguration().orientation;
-                if (width > height
-                        && screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
-                    bitmap = BitmapUtil.rotate(bitmap, 90, mScaler);
-                } else if (height > width
-                        && screenOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    bitmap = BitmapUtil.rotate(bitmap, -90, mScaler);
-                }
-            }
-
-            // Scale bitmap
-            if (width != targetWidth || height != targetHeight) {
-                bitmap = BitmapUtil.transform(mScaler, bitmap,
-                        targetWidth, targetHeight, true, true);
-            }
-
-            return bitmap;
+            return getFormattedBitmap(bitmap);
         }
 
         public int getRotation(){
