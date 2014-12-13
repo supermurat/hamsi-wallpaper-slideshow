@@ -24,8 +24,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -33,10 +31,6 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
-import android.text.Html;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TextView;
 
 public class SettingsActivity extends PreferenceActivity {
 
@@ -66,44 +60,12 @@ public class SettingsActivity extends PreferenceActivity {
             }
         });
 
-        Preference about = (Preference) findPreference(
-                getString(R.string.preferences_about_key));
-        about.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                String versionName;
-                try {
-                    PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
-                    versionName = pi.versionName;
-                } catch (PackageManager.NameNotFoundException e) {
-                    versionName = "";
-                }
-                LayoutInflater inflater = getLayoutInflater();
-                View aboutView = inflater.inflate(R.layout.about_dialog, null);
-                TextView aboutText = (TextView) aboutView.findViewById(R.id.text1);
-                aboutText.setText(Html.fromHtml(getString(R.string.about_text)
-                        .replaceAll("\\{VersionName\\}", versionName)));
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setIcon(R.drawable.hamsi_app_icon)
-                        .setTitle(R.string.app_name)
-                        .setView(aboutView)
-                        .setPositiveButton(android.R.string.ok, new OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                builder.show();
-                return false;
-            }
-        });
-
         final CheckBoxPreference scroll = (CheckBoxPreference) findPreference(
                 getString(R.string.preferences_scroll_key));
         scroll.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if ((Boolean) newValue == true) {
+                if ((Boolean)newValue) {
                     new AlertDialog.Builder(mContext)
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .setTitle(android.R.string.dialog_alert_title)

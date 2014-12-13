@@ -18,22 +18,37 @@
 package com.hamsiapps.hamsiwallpaperslideshow;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
+
+    private Activity me;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        final Button set_wallpaper = (Button) findViewById(R.id.set_wallpaper);
-        set_wallpaper.setOnClickListener(new View.OnClickListener() {
+        me = this;
+
+        TextView tvHowToEnable = (TextView) findViewById(R.id.tvHowToEnable);
+        tvHowToEnable.setText(Html.fromHtml(getString(R.string.how_to_enable)));
+
+        Button btnSetWallpaper = (Button) findViewById(R.id.btnSetWallpaper);
+        btnSetWallpaper.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent();
@@ -49,12 +64,60 @@ public class MainActivity extends Activity {
             }
         });
 
-        final Button configure = (Button) findViewById(R.id.configure);
-        configure.setOnClickListener(new View.OnClickListener() {
+        Button btnConfigure = (Button) findViewById(R.id.btnConfigure);
+        btnConfigure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
                 startActivity(i);
+            }
+        });
+
+        Button btnAbout = (Button) findViewById(R.id.btnAbout);
+        btnAbout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String versionName;
+                try {
+                    PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
+                    versionName = pi.versionName;
+                } catch (PackageManager.NameNotFoundException e) {
+                    versionName = "";
+                }
+                LayoutInflater inflater = getLayoutInflater();
+                View aboutView = inflater.inflate(R.layout.about_dialog, null);
+                TextView aboutText = (TextView) aboutView.findViewById(R.id.text1);
+                aboutText.setText(Html.fromHtml(getString(R.string.about_text)
+                        .replaceAll("\\{VersionName\\}", versionName)));
+                AlertDialog.Builder builder = new AlertDialog.Builder(me);
+                builder.setIcon(R.drawable.hamsi_app_icon)
+                        .setTitle(R.string.app_name)
+                        .setView(aboutView)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                builder.show();
+            }
+        });
+
+        Button btnLike = (Button) findViewById(R.id.btnLike);
+        btnLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String my_package_name = getPackageName();
+                String url = "";
+                try {
+                    me.getPackageManager().getPackageInfo("com.android.vending", 0);
+                    url = "market://details?id=" + my_package_name;
+                } catch ( final Exception e ) {
+                    url = "https://play.google.com/store/apps/details?id=" + my_package_name;
+                }
+                final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
             }
         });
     }

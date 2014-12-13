@@ -24,15 +24,12 @@
     <string name="about_activity">Hamsi Wallpaper Slideshow Hakkında</string>
 	<string name="about_text"><![CDATA[
 		<p><b>Sürüm: {VersionName}</b></p>
-		<p>Eğer beğendiyseniz lütfen Google Play`de yorum yapınız.</p>
-		<p>Ayrıca projemizin web sitesiniz ziyaret edebilirsiniz :<br>
+		<p>Hamsi Wallpaper Slideshow ile birlikte; belirlediğiniz sıklıkla ana ekran ve kilit ekranlarınızın duvar kağıtlarını otomatik olarak bir slayt gösterisiymiş gibi değiştirebilirsiniz.</p>
+		<p><strong>Neden Hamsi?</strong><br />
+		Çünkü o bizim oralarda çok popüler :-)<br />
+		Çünkü o bir tebessüm kaynağı :-)</p>
+		<p>Ayrıca projemizin web sitesini de ziyaret edebilirsiniz :<br>
 		<a href="http://hamsiapps.com/Hamsi-Wallpaper-Slideshow">http://hamsiapps.com/Hamsi-Wallpaper-Slideshow</a>.</p>
-		<p>Not: Bu uygulama <a href="https://code.google.com/p/android-wallpaper-slideshow/">
-		Wallpaper Slideshow (birbeck)</a> uygulamasının çatallamasıdır.<br>
-		Geliştiriciden hiç bir cevap alamadığım için projeyi çatalladım.
-		Ayrıca geliştirici 3 yıldır hiç bir geliştirme yapmamıştı.<br>
-		Bu sürüm çatallamadan sonraki ilk sürümdür, bu yüzden sadece birkaç hata giderme ve
-		ufak tefek düzeltmeler yaptım.</p>
 		<p>&copy; 2014 <i>Hamsi Apps</i>.</p>
 		]]></string>
     <string name="warning_scroll">Tüm resimler ana ekranı doldurmak üzere uzatılacaktır. Eğer
@@ -42,12 +39,13 @@
         vs) Not: Bazı aygıtlarda bu özellik olması gerektiği gibi çalışmayacaktır (TouchWiz).</string>
     <string name="set_wallpaper">Uygula</string>
     <string name="settings">Ayarlar</string>
-    <string name="how_to_enable">Hamsi Wallpaper Slideshow canlı duvar kağıdıdır. Normalde canlı
+    <string name="how_to_enable"><![CDATA[Hamsi Wallpaper Slideshow canlı duvar kağıdıdır. Normalde canlı
         duvar kağıtları başlatıcı simgesi içermezler. Bu uygulamayı canlı duvar kağıdı olarak
-        kullanmak isterseniz lütfen aşağıdaki işlem basamaklarını uygulayınız.</string>
-    <string name="how_to_enable_step1"><![CDATA[İşlem 1: "Uygula" butonuna dokununuz]]></string>
-    <string name="how_to_enable_step2"><![CDATA[İşlem 2: Açılan duvar kağıdı seçicisi ekranında
-         "Duvar kağıdını ayarla" butonuna dokununuz]]></string>
+        kullanmak isterseniz lütfen aşağıdaki işlem basamaklarını uygulayınız.<br /><br />
+        İşlem 1: "Ayarlar" butonuna dokununuz ve bir albüm seçiniz<br />
+        İşlem 2: "Uygula" butonuna dokununuz<br />
+        İşlem 3: Açılan duvar kağıdı seçicisi ekranında "Duvar kağıdını ayarla" butonuna dokununuz<br />
+        ]]></string>
 
     <string name="preferences_key">preferences</string>
 
@@ -127,7 +125,7 @@
         değiştir</string>
     <string name="preferences_screen_awake_default">false</string>
 
-    <string name="preferences_about_key">about</string>
-    <string name="preferences_about_title">Hamsi Wallpaper Slideshow Hakkında</string>
+    <string name="about">Hakkında</string>
+    <string name="like_it">Sevdin Mi?</string>
 
 </resources>

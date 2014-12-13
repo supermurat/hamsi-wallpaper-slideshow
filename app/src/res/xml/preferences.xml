@@ -69,7 +69,4 @@
 		android:summary="@string/preferences_screen_awake_summary"
 		android:defaultValue="@string/preferences_screen_awake_default" android:id="@+id/prefs_screen_awake"/>
 
-	<Preference android:key="@string/preferences_about_key"
-		android:title="@string/preferences_about_title" />
-
 </PreferenceScreen>
