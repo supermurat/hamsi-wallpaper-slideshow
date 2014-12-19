@@ -44,8 +44,7 @@ public class SettingsActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         mContext = this;
 
-        getPreferenceManager().setSharedPreferencesName(
-                HamsiWallpaperSlideshow.SHARED_PREFS_NAME);
+        getPreferenceManager().setSharedPreferencesName(HamsiWallpaperSlideshow.SHARED_PREFS_NAME);
         addPreferencesFromResource(R.xml.preferences);
 
         mPath = (ListPreference) findPreference(getString(
@@ -97,8 +96,7 @@ public class SettingsActivity extends PreferenceActivity {
                     SharedPreferences prefs = getSharedPreferences(
                             HamsiWallpaperSlideshow.SHARED_PREFS_NAME, 1);
                     Editor editor = prefs.edit();
-                    editor.putString(getResources().getString(R.string.preferences_folder_key),
-                            i.getStringExtra("folder"));
+                    editor.putString(getResources().getString(R.string.preferences_folder_key), i.getStringExtra("folder"));
                     editor.commit();
                     break;
             }

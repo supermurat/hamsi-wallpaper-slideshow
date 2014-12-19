@@ -9,8 +9,8 @@ android {
         applicationId 'com.hamsiapps.hamsiwallpaperslideshow'
         minSdkVersion 10
         targetSdkVersion 21
-        versionCode 29
-        versionName '2.9'
+        versionCode 30
+        versionName '3.0'
     }
     sourceSets {
         main {
