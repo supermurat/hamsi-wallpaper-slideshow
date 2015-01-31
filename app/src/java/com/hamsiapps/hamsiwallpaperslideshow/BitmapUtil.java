@@ -130,8 +130,7 @@ public class BitmapUtil {
                                    Bitmap source,
                                    int targetWidth,
                                    int targetHeight,
-                                   boolean scaleUp,
-                                   boolean recycle) {
+                                   boolean scaleUp) {
         int deltaX = source.getWidth() - targetWidth;
         int deltaY = source.getHeight() - targetHeight;
         if (!scaleUp && (deltaX < 0 || deltaY < 0)) {
@@ -160,9 +159,7 @@ public class BitmapUtil {
                     targetWidth - dstX,
                     targetHeight - dstY);
             c.drawBitmap(source, src, dst, null);
-            if (recycle) {
-                source.recycle();
-            }
+            source.recycle();
             return b2;
         }
         float bitmapWidthF = source.getWidth();
@@ -192,12 +189,9 @@ public class BitmapUtil {
             // this is used for minithumb and crop, so we want to filter here.
             b1 = Bitmap.createBitmap(source, 0, 0,
                     source.getWidth(), source.getHeight(), scaler, true);
+            source.recycle();
         } else {
             b1 = source;
-        }
-
-        if (recycle && b1 != source) {
-            source.recycle();
         }
 
         int dx1 = Math.max(0, b1.getWidth() - targetWidth);
@@ -209,12 +203,7 @@ public class BitmapUtil {
                 dy1 / 2,
                 targetWidth,
                 targetHeight);
-
-        if (b2 != b1) {
-            if (recycle || b1 != source) {
-                b1.recycle();
-            }
-        }
+        b1.recycle();
 
         return b2;
     }

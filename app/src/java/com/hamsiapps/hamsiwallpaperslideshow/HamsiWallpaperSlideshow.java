@@ -223,9 +223,6 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
             mHeight = height;
             mMinWidth = width * 2; // cheap hack for scrolling
             mMinHeight = height;
-            if (mBitmap != null) {
-                mBitmap.recycle();
-            }
             drawFrame();
         }
 
@@ -320,7 +317,9 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
         }
 
         void drawFrame() {
-
+            if (mBitmap != null) {
+                mBitmap.recycle();
+            }
             final SurfaceHolder holder = getSurfaceHolder();
             Canvas c = null;
 
@@ -473,7 +472,7 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
             // Scale bitmap
             if (width != targetWidth || height != targetHeight) {
                 bitmap = BitmapUtil.transform(mScaler, bitmap,
-                        targetWidth, targetHeight, true, true);
+                        targetWidth, targetHeight, true);
             }
             return bitmap;
         }

@@ -30,15 +30,6 @@ import java.io.File;
 
 public class FolderArrayAdapter extends ArrayAdapter<String> {
 
-    private static boolean mHasThumbnailUtils;
-    static {
-        try {
-            ThumbnailUtilsWrapper.checkAvailable();
-            mHasThumbnailUtils = true;
-        } catch (final Throwable t) {
-            mHasThumbnailUtils = false;
-        }
-    }
     private final LayoutInflater mInflater;
     private final String[] mFolders;
 
@@ -67,11 +58,7 @@ public class FolderArrayAdapter extends ArrayAdapter<String> {
                 if (images.length > 0) {
                     cache.text1.setText(new File(folder).getName() + " (" + images.length + ")");
                     Bitmap bitmap = BitmapUtil.makeBitmap(75, 10000, images[0].getAbsolutePath(), null);
-                    if (mHasThumbnailUtils) {
-                        bitmap = ThumbnailUtilsWrapper.extractThumbnail(bitmap, 75, 75);
-                    } else {
-                        bitmap = BitmapUtil.transform(null, bitmap, 75, 75, false, true);
-                    }
+                    bitmap = BitmapUtil.transform(null, bitmap, 75, 75, false);
                     cache.image.setImageBitmap(bitmap);
                 }
             } catch (final Exception e) {
