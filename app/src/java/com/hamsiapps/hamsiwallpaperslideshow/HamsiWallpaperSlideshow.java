@@ -100,7 +100,6 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
         private float mXOffset = 0;
         private float mYOffset = 0;
         private boolean mVisible = false;
-        private Bitmap mBitmap = null;
         private String mBitmapPath = null;
         private int mIndex = -1;
         private long mLastDrawTime = 0;
@@ -138,8 +137,8 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
                 @Override
                 public boolean onDoubleTap(MotionEvent e) {
                     if (mTouchEvents) {
-                        mLastDrawTime = -1;
-                        drawFrame();
+                        mLastDrawTime = 0;
+                        drawFrame(false, true);
                         return true;
                     }
                     return false;
@@ -223,7 +222,7 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
             mHeight = height;
             mMinWidth = width * 2; // cheap hack for scrolling
             mMinHeight = height;
-            drawFrame();
+            drawFrame(true);
         }
 
         @Override
@@ -244,7 +243,7 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
                                      float xStep, float yStep, int xPixels, int yPixels) {
             mXOffset = xOffset;
             mYOffset = yOffset;
-            drawFrame();
+            drawFrame(true);
         }
 
         @Override
@@ -317,11 +316,16 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
         }
 
         void drawFrame() {
-            if (mBitmap != null) {
-                mBitmap.recycle();
-            }
+            drawFrame(false, false);
+        }
+
+        void drawFrame(boolean _isSetAgain) {
+            drawFrame(_isSetAgain, false);
+        }
+
+        void drawFrame(boolean _isSetAgain, boolean _isOpenApplicationIfNotExistAnyFile) {
             final SurfaceHolder holder = getSurfaceHolder();
-            Canvas c = null;
+            Bitmap mBitmap = null;
 
             String state = Environment.getExternalStorageState();
             if (!state.equals(Environment.MEDIA_MOUNTED) &&
@@ -330,12 +334,9 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
             }
 
             try {
-                // Lock the canvas for writing
-                c = holder.lockCanvas();
-
                 // Do we need to get a new image?
                 boolean getImage = false;
-                if (mBitmapPath == null || mBitmap == null) {
+                if (mBitmapPath == null) {
                     getImage = true;
                 } else if (mDuration > 0 && mLastDrawTime < System.currentTimeMillis() - mDuration) {
                     getImage = true;
@@ -346,16 +347,13 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
                 // Get image to draw
                 if (getImage) {
                     // Get a list of files
-                    File[] files = BitmapUtil.listFiles(new File(mFolder),
-                            mRecurse, ImageFilter);
+                    File[] files = BitmapUtil.listFiles(new File(mFolder), mRecurse, ImageFilter);
                     if (files == null || files.length < 1) {
-                        if (mLastDrawTime == -1) {
-                            mLastDrawTime = 0;
+                        if (_isOpenApplicationIfNotExistAnyFile) {
                             Intent dialogIntent = new Intent(getBaseContext(),
                                     com.hamsiapps.hamsiwallpaperslideshow.SettingsActivity.class);
                             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             getApplication().startActivity(dialogIntent);
-                            holder.unlockCanvasAndPost(c);
                             return;
                         }
                         try {
@@ -399,10 +397,12 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
                         // Save the current time
                         mLastDrawTime = System.currentTimeMillis();
                     }
-                } else if (mBitmap != null && mBitmap.isRecycled()) {
+                } else if (_isSetAgain) {
                     mBitmap = getFormattedBitmap(mBitmapPath);
                 }
-            } catch (NoImagesInFolderException noie) {
+            } catch (NoImagesInFolderException e) {
+                // Get and Lock the canvas for writing
+                Canvas c = holder.lockCanvas();
                 c.drawColor(Color.BLACK);
                 c.translate(0, 30);
                 c.drawText("No photos found in selected folder, ",
@@ -410,17 +410,16 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
                 c.drawText("press Settings to select a folder...",
                         c.getWidth() / 2.0f, (c.getHeight() / 2.0f) + 15, mPaint);
                 holder.unlockCanvasAndPost(c);
+                e.printStackTrace();
                 return;
-            } catch (NullPointerException npe) {
-                holder.unlockCanvasAndPost(c);
-                return;
-            } catch (RuntimeException re) {
-                holder.unlockCanvasAndPost(c);
+            } catch (Exception e) {
+                e.printStackTrace();
                 return;
             }
 
+            Canvas c = null;
             try {
-                if (c != null) {
+                if (mBitmap != null) {
                     int xPos = 0;
                     int yPos = 0;
                     if (mScroll) {
@@ -428,8 +427,11 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
                         yPos = 0 - (int) (mHeight * mYOffset);
                     }
                     try {
+                        // Get and Lock the canvas for writing
+                        c = holder.lockCanvas();
                         c.drawColor(Color.BLACK);
                         c.drawBitmap(mBitmap, xPos, yPos, mPaint);
+                        mBitmap.recycle();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -510,7 +512,7 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
     }
 
     class NoImagesInFolderException extends Exception {
-        private static final long serialVersionUID = 1L;
+
     }
 
 }
