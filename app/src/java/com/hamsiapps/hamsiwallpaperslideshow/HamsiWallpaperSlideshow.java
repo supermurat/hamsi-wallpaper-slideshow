@@ -31,10 +31,12 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
+import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -44,7 +46,6 @@ import android.view.WindowManager;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileOutputStream;
 
 public class HamsiWallpaperSlideshow extends WallpaperService {
 
@@ -324,28 +325,18 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
         }
 
         void drawFrame(boolean _isSetAgain, boolean _isOpenApplicationIfNotExistAnyFile) {
-            final SurfaceHolder holder = getSurfaceHolder();
-            Bitmap mBitmap = null;
-
             String state = Environment.getExternalStorageState();
             if (!state.equals(Environment.MEDIA_MOUNTED) &&
                     !state.equals(Environment.MEDIA_MOUNTED_READ_ONLY)) {
                 return;
             }
 
+            Bitmap mBitmap = null;
+
             try {
                 // Do we need to get a new image?
-                boolean getImage = false;
-                if (mBitmapPath == null) {
-                    getImage = true;
-                } else if (mDuration > 0 && mLastDrawTime < System.currentTimeMillis() - mDuration) {
-                    getImage = true;
-                } else if (mLastDrawTime == 0) {
-                    getImage = true;
-                }
-
-                // Get image to draw
-                if (getImage) {
+                if ((mBitmapPath == null) ||
+                    (mDuration > 0 && mLastDrawTime < System.currentTimeMillis() - mDuration)) {
                     // Get a list of files
                     File[] files = BitmapUtil.listFiles(new File(mFolder), mRecurse, ImageFilter);
                     if (files == null || files.length < 1) {
@@ -356,26 +347,10 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
                             getApplication().startActivity(dialogIntent);
                             return;
                         }
-                        try {
-                            Bitmap bitmap;
-                            if (getRotation() == Configuration.ORIENTATION_LANDSCAPE) {
-                                bitmap = getFormattedBitmap(R.drawable.hamsi_back_land);
-                            } else {
-                                bitmap = getFormattedBitmap(R.drawable.hamsi_back);
-                            }
-                            File outputFile = File.createTempFile("Hamsi-", ".png", getCacheDir());
-                            FileOutputStream out = new FileOutputStream(outputFile);
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-                            out.flush();
-                            out.close();
-                            files = new File[1];
-                            files[0] = outputFile;
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (files == null || files.length < 1) {
-                        throw new NoImagesInFolderException();
+                        mBitmap = getDefaultBitmap();
+                        mBitmapPath = "default";
+                        // Save the current time
+                        mLastDrawTime = System.currentTimeMillis();
                     } else {
                         // Increment counter
                         int nFiles = files.length;
@@ -390,7 +365,6 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
                             }
                         }
 
-                        // Read file to bitmap
                         mBitmapPath = files[mIndex].getAbsolutePath();
                         mBitmap = getFormattedBitmap(mBitmapPath);
 
@@ -398,25 +372,18 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
                         mLastDrawTime = System.currentTimeMillis();
                     }
                 } else if (_isSetAgain) {
-                    mBitmap = getFormattedBitmap(mBitmapPath);
+                    if (mBitmapPath.equals("default")) {
+                        mBitmap = getDefaultBitmap();
+                    } else {
+                        mBitmap = getFormattedBitmap(mBitmapPath);
+                    }
                 }
-            } catch (NoImagesInFolderException e) {
-                // Get and Lock the canvas for writing
-                Canvas c = holder.lockCanvas();
-                c.drawColor(Color.BLACK);
-                c.translate(0, 30);
-                c.drawText("No photos found in selected folder, ",
-                        c.getWidth() / 2.0f, (c.getHeight() / 2.0f) - 15, mPaint);
-                c.drawText("press Settings to select a folder...",
-                        c.getWidth() / 2.0f, (c.getHeight() / 2.0f) + 15, mPaint);
-                holder.unlockCanvasAndPost(c);
-                e.printStackTrace();
-                return;
             } catch (Exception e) {
                 e.printStackTrace();
                 return;
             }
 
+            SurfaceHolder holder = getSurfaceHolder();
             Canvas c = null;
             try {
                 if (mBitmap != null) {
@@ -443,8 +410,53 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
             // Reschedule the next redraw
             mHandler.removeCallbacks(mWorker);
             if (mVisible) {
-                mHandler.postDelayed(mWorker, 5000);
+                mHandler.postDelayed(mWorker, 15000);
             }
+        }
+
+        private Bitmap getDefaultBitmap()
+        {
+            DisplayMetrics metrics = getResources().getDisplayMetrics();
+            Bitmap mBitmap = null;
+            String note1 = getString(R.string.no_photos_found_1);
+            String note2 = getString(R.string.no_photos_found_2);
+            String note3 = getString(R.string.no_photos_found_3);
+            int y;
+            if (getRotation() == Configuration.ORIENTATION_LANDSCAPE) {
+                mBitmap = getFormattedBitmap(R.drawable.hamsi_back_land);
+                y = (int)(mBitmap.getHeight() / 10 * 8.6);
+                note2 = note2 + " " + note3;
+                note3 = "";
+            } else {
+                mBitmap = getFormattedBitmap(R.drawable.hamsi_back);
+                y = (int)(mBitmap.getHeight() / 10 * 7);
+            }
+            int fontSize = (int)(mBitmap.getHeight() / 40);
+            Bitmap.Config bitmapConfig = mBitmap.getConfig();
+            if(bitmapConfig == null) {
+                bitmapConfig = Bitmap.Config.ARGB_8888;
+            }
+            mBitmap = mBitmap.copy(bitmapConfig, true);
+
+            Canvas canvas = new Canvas(mBitmap);
+            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paint.setColor(Color.rgb(255, 255, 255));
+            paint.setTextSize(fontSize);
+            paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
+            Rect bounds1 = new Rect();
+            Rect bounds2 = new Rect();
+            Rect bounds3 = new Rect();
+            paint.getTextBounds(note1, 0, note1.length(), bounds1);
+            paint.getTextBounds(note2, 0, note2.length(), bounds2);
+            paint.getTextBounds(note3, 0, note3.length(), bounds3);
+            int x1 = (mBitmap.getWidth() - bounds1.width())/2;
+            int x2 = (mBitmap.getWidth() - bounds2.width())/2;
+            int x3 = (mBitmap.getWidth() - bounds3.width())/2;
+
+            canvas.drawText(note1, x1, y, paint);
+            canvas.drawText(note2, x2, y + fontSize + 10, paint);
+            canvas.drawText(note3, x3, y + fontSize + fontSize + 20, paint);
+            return mBitmap;
         }
 
         private Bitmap getFormattedBitmap(Bitmap bitmap) {
@@ -452,8 +464,7 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
             int targetHeight = (mScroll) ? mMinHeight : mHeight;
 
             if (bitmap == null) {
-                return Bitmap.createBitmap(targetWidth, targetHeight,
-                        Bitmap.Config.ARGB_8888);
+                return Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
             }
 
             int width = bitmap.getWidth();
@@ -461,33 +472,30 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
 
             // Rotate
             if (mRotate) {
-                int screenOrientation = getResources().getConfiguration().orientation;
-                if (width > height
-                        && screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                int orientation = getResources().getConfiguration().orientation;
+                if (width > height && orientation == Configuration.ORIENTATION_PORTRAIT) {
                     bitmap = BitmapUtil.rotate(bitmap, 90, mScaler);
-                } else if (height > width
-                        && screenOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                } else if (height > width && orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     bitmap = BitmapUtil.rotate(bitmap, -90, mScaler);
                 }
             }
 
             // Scale bitmap
             if (width != targetWidth || height != targetHeight) {
-                bitmap = BitmapUtil.transform(mScaler, bitmap,
-                        targetWidth, targetHeight, true);
+                bitmap = BitmapUtil.transform(mScaler, bitmap, targetWidth, targetHeight, true);
             }
             return bitmap;
         }
 
         private Bitmap getFormattedBitmap(String file) {
             Bitmap bitmap = BitmapUtil.makeBitmap(Math.max(mMinWidth, mMinHeight),
-                    mMinWidth * mMinHeight, file, null);
+                    mMinWidth * mMinHeight, file);
             return getFormattedBitmap(bitmap);
         }
 
         private Bitmap getFormattedBitmap(int id) {
             Bitmap bitmap = BitmapUtil.makeBitmap(Math.max(mMinWidth, mMinHeight),
-                    mMinWidth * mMinHeight, getResources(), id, null);
+                    mMinWidth * mMinHeight, getResources(), id);
             return getFormattedBitmap(bitmap);
         }
 
@@ -508,10 +516,6 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
                 return Configuration.ORIENTATION_LANDSCAPE;
             }
         }
-
-    }
-
-    class NoImagesInFolderException extends Exception {
 
     }
 

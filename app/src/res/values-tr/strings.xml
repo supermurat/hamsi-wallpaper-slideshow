@@ -127,5 +127,8 @@
 
     <string name="about">Hakkında</string>
     <string name="like_it">Sevdin Mi?</string>
+    <string name="no_photos_found_1">Seçilen klasörde resim bulunamadı,</string>
+    <string name="no_photos_found_2">klasör seçmek için Ayarlar`a dokununuz veya </string>
+    <string name="no_photos_found_3">ekrana iki kere dokununuz…</string>
 
 </resources>

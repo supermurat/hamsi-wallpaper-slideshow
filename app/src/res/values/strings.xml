@@ -118,5 +118,8 @@
 
     <string name="about">About</string>
     <string name="like_it">Like It!</string>
+    <string name="no_photos_found_1">No photos found in selected folder, </string>
+    <string name="no_photos_found_2">press Settings to select a folder or </string>
+    <string name="no_photos_found_3">double tab on screen…</string>
 
 </resources>

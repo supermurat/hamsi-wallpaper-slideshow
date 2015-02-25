@@ -208,20 +208,17 @@ public class BitmapUtil {
         return b2;
     }
 
-    public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
-                                    String pathName, BitmapFactory.Options options) {
+    public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels, String pathName) {
         try {
-            if (options == null) options = new BitmapFactory.Options();
+            BitmapFactory.Options options = new BitmapFactory.Options();
 
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeFile(pathName, options);
-            if (options.mCancel || options.outWidth == -1
-                    || options.outHeight == -1) {
+            if (options.mCancel || options.outWidth == -1 || options.outHeight == -1) {
                 return null;
             }
 
-            options.inSampleSize = computeSampleSize(
-                    options, minSideLength, maxNumOfPixels);
+            options.inSampleSize = computeSampleSize(options, minSideLength, maxNumOfPixels);
             options.inJustDecodeBounds = false;
             //options.inDither = false;
             //options.inPreferredConfig = Bitmap.Config.ARGB_8888;
@@ -232,20 +229,17 @@ public class BitmapUtil {
         }
     }
 
-    public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels,
-                                    Resources res, int id, BitmapFactory.Options options) {
+    public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels, Resources res, int id) {
         try {
-            if (options == null) options = new BitmapFactory.Options();
+            BitmapFactory.Options options = new BitmapFactory.Options();
 
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeResource(res, id, options);
-            if (options.mCancel || options.outWidth == -1
-                    || options.outHeight == -1) {
+            if (options.mCancel || options.outWidth == -1 || options.outHeight == -1) {
                 return null;
             }
 
-            options.inSampleSize = computeSampleSize(
-                    options, minSideLength, maxNumOfPixels);
+            options.inSampleSize = computeSampleSize(options, minSideLength, maxNumOfPixels);
             options.inJustDecodeBounds = false;
             //options.inDither = false;
             //options.inPreferredConfig = Bitmap.Config.ARGB_8888;

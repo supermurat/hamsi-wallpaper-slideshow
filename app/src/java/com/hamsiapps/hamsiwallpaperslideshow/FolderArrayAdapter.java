@@ -57,7 +57,7 @@ public class FolderArrayAdapter extends ArrayAdapter<String> {
                 final File[] images = new File(folder).listFiles(SelectFolderActivity.mImageFilter);
                 if (images.length > 0) {
                     cache.text1.setText(new File(folder).getName() + " (" + images.length + ")");
-                    Bitmap bitmap = BitmapUtil.makeBitmap(75, 10000, images[0].getAbsolutePath(), null);
+                    Bitmap bitmap = BitmapUtil.makeBitmap(75, 10000, images[0].getAbsolutePath());
                     bitmap = BitmapUtil.transform(null, bitmap, 75, 75, false);
                     cache.image.setImageBitmap(bitmap);
                 }

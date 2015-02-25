@@ -53,11 +53,13 @@
 		android:summary="@string/preferences_rotate_summary"
 		android:defaultValue="@string/preferences_rotate_default" />
 
+<!--
 	<CheckBoxPreference android:id="@+id/prefs_scroll"
 		android:key="@string/preferences_scroll_key"
 		android:title="@string/preferences_scroll_title"
 		android:summary="@string/preferences_scroll_summary"
 		android:defaultValue="@string/preferences_scroll_default" />
+-->
 
 	<CheckBoxPreference android:key="@string/preferences_doubletap_key"
 		android:title="@string/preferences_doubletap_title"
