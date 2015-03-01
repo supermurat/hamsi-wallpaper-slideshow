@@ -22,6 +22,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 
@@ -37,6 +38,184 @@ public class BitmapUtil {
     private static final String TAG = "BitmapUtil";
 
     public BitmapUtil() {
+
+    }
+
+    /**
+     * Utility function for decoding an image resource. The decoded bitmap will
+     * be optimized for further scaling to the requested destination dimensions
+     * and scaling logic.
+     *
+     * @param res The resources object containing the image data
+     * @param resId The resource id of the image data
+     * @param dstWidth Width of destination area
+     * @param dstHeight Height of destination area
+     * @param scalingLogic Logic to use to avoid image stretching
+     * @return Decoded bitmap
+     */
+    public static Bitmap getSampledBitmap(Resources res, int resId, int dstWidth, int dstHeight,
+                                          ScalingLogic scalingLogic) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(res, resId, options);
+        options.inJustDecodeBounds = false;
+        options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight, dstWidth,
+                dstHeight, scalingLogic);
+
+        return BitmapFactory.decodeResource(res, resId, options);
+    }
+
+    /**
+     * Utility function for decoding an image resource. The decoded bitmap will
+     * be optimized for further scaling to the requested destination dimensions
+     * and scaling logic.
+     *
+     * @param pathName The path name of the image file
+     * @param dstWidth Width of destination area
+     * @param dstHeight Height of destination area
+     * @param scalingLogic Logic to use to avoid image stretching
+     * @return Decoded bitmap
+     */
+    public static Bitmap getSampledBitmap(String pathName, int dstWidth, int dstHeight,
+                                          ScalingLogic scalingLogic) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(pathName, options);
+        options.inJustDecodeBounds = false;
+        options.inSampleSize = calculateSampleSize(options.outWidth, options.outHeight, dstWidth,
+                dstHeight, scalingLogic);
+
+        return BitmapFactory.decodeFile(pathName, options);
+    }
+
+    /**
+     * Utility function for creating a scaled version of an existing bitmap
+     *
+     * @param unscaledBitmap Bitmap to scale
+     * @param dstWidth Wanted width of destination bitmap
+     * @param dstHeight Wanted height of destination bitmap
+     * @param scalingLogic Logic to use to avoid image stretching
+     * @return New scaled bitmap object
+     */
+    public static Bitmap getSampledBitmap(Bitmap unscaledBitmap, int dstWidth, int dstHeight,
+                                            ScalingLogic scalingLogic) {
+        Rect srcRect = calculateSrcRect(unscaledBitmap.getWidth(), unscaledBitmap.getHeight(),
+                dstWidth, dstHeight, scalingLogic);
+        Rect dstRect = calculateDstRect(unscaledBitmap.getWidth(), unscaledBitmap.getHeight(),
+                dstWidth, dstHeight, scalingLogic);
+        Bitmap scaledBitmap = Bitmap.createBitmap(dstRect.width(), dstRect.height(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(scaledBitmap);
+        canvas.drawBitmap(unscaledBitmap, srcRect, dstRect, new Paint(Paint.FILTER_BITMAP_FLAG));
+
+        return scaledBitmap;
+    }
+
+    /**
+     * ScalingLogic defines how scaling should be carried out if source and
+     * destination image has different aspect ratio.
+     *
+     * CROP: Scales the image the minimum amount while making sure that at least
+     * one of the two dimensions fit inside the requested destination area.
+     * Parts of the source image will be cropped to realize this.
+     *
+     * FIT: Scales the image the minimum amount while making sure both
+     * dimensions fit inside the requested destination area. The resulting
+     * destination dimensions might be adjusted to a smaller size than
+     * requested.
+     */
+    public static enum ScalingLogic {
+        CROP, FIT
+    }
+
+    /**
+     * Calculate optimal down-sampling factor given the dimensions of a source
+     * image, the dimensions of a destination area and a scaling logic.
+     *
+     * @param srcWidth Width of source image
+     * @param srcHeight Height of source image
+     * @param dstWidth Width of destination area
+     * @param dstHeight Height of destination area
+     * @param scalingLogic Logic to use to avoid image stretching
+     * @return Optimal down scaling sample size for decoding
+     */
+    public static int calculateSampleSize(int srcWidth, int srcHeight, int dstWidth, int dstHeight,
+                                          ScalingLogic scalingLogic) {
+        if (scalingLogic == ScalingLogic.FIT) {
+            final float srcAspect = (float)srcWidth / (float)srcHeight;
+            final float dstAspect = (float)dstWidth / (float)dstHeight;
+
+            if (srcAspect > dstAspect) {
+                return srcWidth / dstWidth;
+            } else {
+                return srcHeight / dstHeight;
+            }
+        } else {
+            final float srcAspect = (float)srcWidth / (float)srcHeight;
+            final float dstAspect = (float)dstWidth / (float)dstHeight;
+
+            if (srcAspect > dstAspect) {
+                return srcHeight / dstHeight;
+            } else {
+                return srcWidth / dstWidth;
+            }
+        }
+    }
+
+    /**
+     * Calculates source rectangle for scaling bitmap
+     *
+     * @param srcWidth Width of source image
+     * @param srcHeight Height of source image
+     * @param dstWidth Width of destination area
+     * @param dstHeight Height of destination area
+     * @param scalingLogic Logic to use to avoid image stretching
+     * @return Optimal source rectangle
+     */
+    public static Rect calculateSrcRect(int srcWidth, int srcHeight, int dstWidth, int dstHeight,
+                                        ScalingLogic scalingLogic) {
+        if (scalingLogic == ScalingLogic.CROP) {
+            final float srcAspect = (float)srcWidth / (float)srcHeight;
+            final float dstAspect = (float)dstWidth / (float)dstHeight;
+
+            if (srcAspect > dstAspect) {
+                final int srcRectWidth = (int)(srcHeight * dstAspect);
+                final int srcRectLeft = (srcWidth - srcRectWidth) / 2;
+                return new Rect(srcRectLeft, 0, srcRectLeft + srcRectWidth, srcHeight);
+            } else {
+                final int srcRectHeight = (int)(srcWidth / dstAspect);
+                final int scrRectTop = (int)(srcHeight - srcRectHeight) / 2;
+                return new Rect(0, scrRectTop, srcWidth, scrRectTop + srcRectHeight);
+            }
+        } else {
+            return new Rect(0, 0, srcWidth, srcHeight);
+        }
+    }
+
+    /**
+     * Calculates destination rectangle for scaling bitmap
+     *
+     * @param srcWidth Width of source image
+     * @param srcHeight Height of source image
+     * @param dstWidth Width of destination area
+     * @param dstHeight Height of destination area
+     * @param scalingLogic Logic to use to avoid image stretching
+     * @return Optimal destination rectangle
+     */
+    public static Rect calculateDstRect(int srcWidth, int srcHeight, int dstWidth, int dstHeight,
+                                        ScalingLogic scalingLogic) {
+        if (scalingLogic == ScalingLogic.FIT) {
+            final float srcAspect = (float)srcWidth / (float)srcHeight;
+            final float dstAspect = (float)dstWidth / (float)dstHeight;
+
+            if (srcAspect > dstAspect) {
+                return new Rect(0, 0, dstWidth, (int)(dstWidth / srcAspect));
+            } else {
+                return new Rect(0, 0, (int)(dstHeight * srcAspect), dstHeight);
+            }
+        } else {
+            return new Rect(0, 0, dstWidth, dstHeight);
+        }
     }
 
     // Rotates the bitmap by the specified degree.
@@ -63,69 +242,6 @@ public class BitmapUtil {
         return b;
     }
 
-    /*
-     * Compute the sample size as a function of minSideLength
-     * and maxNumOfPixels.
-     * minSideLength is used to specify that minimal width or height of a
-     * bitmap.
-     * maxNumOfPixels is used to specify the maximal size in pixels that is
-     * tolerable in terms of memory usage.
-     *
-     * The function returns a sample size based on the constraints.
-     * Both size and minSideLength can be passed in as IImage.UNCONSTRAINED,
-     * which indicates no care of the corresponding constraint.
-     * The functions prefers returning a sample size that
-     * generates a smaller bitmap, unless minSideLength = IImage.UNCONSTRAINED.
-     *
-     * Also, the function rounds up the sample size to a power of 2 or multiple
-     * of 8 because BitmapFactory only honors sample size this way.
-     * For example, BitmapFactory downsamples an image by 2 even though the
-     * request is 3. So we round up the sample size to avoid OOM.
-     */
-    public static int computeSampleSize(BitmapFactory.Options options,
-                                        int minSideLength, int maxNumOfPixels) {
-        int initialSize = computeInitialSampleSize(options, minSideLength,
-                maxNumOfPixels);
-
-        int roundedSize;
-        if (initialSize <= 8) {
-            roundedSize = 1;
-            while (roundedSize < initialSize) {
-                roundedSize <<= 1;
-            }
-        } else {
-            roundedSize = (initialSize + 7) / 8 * 8;
-        }
-
-        return roundedSize;
-    }
-
-    private static int computeInitialSampleSize(BitmapFactory.Options options,
-                                                int minSideLength, int maxNumOfPixels) {
-        double w = options.outWidth;
-        double h = options.outHeight;
-
-        int lowerBound = (maxNumOfPixels == UNCONSTRAINED) ? 1 :
-                (int) Math.ceil(Math.sqrt(w * h / maxNumOfPixels));
-        int upperBound = (minSideLength == UNCONSTRAINED) ? 128 :
-                (int) Math.min(Math.floor(w / minSideLength),
-                        Math.floor(h / minSideLength));
-
-        if (upperBound < lowerBound) {
-            // return the larger one when there is no overlapping zone.
-            return lowerBound;
-        }
-
-        if ((maxNumOfPixels == UNCONSTRAINED) &&
-                (minSideLength == UNCONSTRAINED)) {
-            return 1;
-        } else if (minSideLength == UNCONSTRAINED) {
-            return lowerBound;
-        } else {
-            return upperBound;
-        }
-    }
-
     public static Bitmap transform(Matrix scaler,
                                    Bitmap source,
                                    int targetWidth,
@@ -140,8 +256,7 @@ public class BitmapUtil {
              * as possible into the target and leaving the top/bottom or
              * left/right (or both) black.
              */
-            Bitmap b2 = Bitmap.createBitmap(targetWidth, targetHeight,
-                    Bitmap.Config.ARGB_8888);
+            Bitmap b2 = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(b2);
 
             int deltaXHalf = Math.max(0, deltaX / 2);
@@ -206,48 +321,6 @@ public class BitmapUtil {
         b1.recycle();
 
         return b2;
-    }
-
-    public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels, String pathName) {
-        try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(pathName, options);
-            if (options.mCancel || options.outWidth == -1 || options.outHeight == -1) {
-                return null;
-            }
-
-            options.inSampleSize = computeSampleSize(options, minSideLength, maxNumOfPixels);
-            options.inJustDecodeBounds = false;
-            //options.inDither = false;
-            //options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            return BitmapFactory.decodeFile(pathName, options);
-        } catch (OutOfMemoryError ex) {
-            Log.e(TAG, "Got oom exception ", ex);
-            return null;
-        }
-    }
-
-    public static Bitmap makeBitmap(int minSideLength, int maxNumOfPixels, Resources res, int id) {
-        try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeResource(res, id, options);
-            if (options.mCancel || options.outWidth == -1 || options.outHeight == -1) {
-                return null;
-            }
-
-            options.inSampleSize = computeSampleSize(options, minSideLength, maxNumOfPixels);
-            options.inJustDecodeBounds = false;
-            //options.inDither = false;
-            //options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            return BitmapFactory.decodeResource(res, id, options);
-        } catch (OutOfMemoryError ex) {
-            Log.e(TAG, "Got oom exception ", ex);
-            return null;
-        }
     }
 
     public static String getExtension(String name) {

@@ -22,8 +22,8 @@
     
     <ImageView
         android:id="@+id/image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="6dip"
@@ -38,7 +38,8 @@
        android:text="Folder name"
        android:textAppearance="?android:attr/textAppearanceLarge"
        android:maxLines="1"
-       android:ellipsize="marquee" />
+       android:ellipsize="marquee"
+       android:textColor="#ffffffff"/>
 
    <TextView
    	android:id="@+id/text2"

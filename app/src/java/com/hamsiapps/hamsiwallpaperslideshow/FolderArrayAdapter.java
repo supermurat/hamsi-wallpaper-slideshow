@@ -19,6 +19,7 @@ package com.hamsiapps.hamsiwallpaperslideshow;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ public class FolderArrayAdapter extends ArrayAdapter<String> {
 
     private final LayoutInflater mInflater;
     private final String[] mFolders;
+    private static final String TAG = "FolderArrayAdapter";
 
     public FolderArrayAdapter(final Context context, final int layout, final String[] folders) {
         super(context, layout, folders);
@@ -57,11 +59,12 @@ public class FolderArrayAdapter extends ArrayAdapter<String> {
                 final File[] images = new File(folder).listFiles(SelectFolderActivity.mImageFilter);
                 if (images.length > 0) {
                     cache.text1.setText(new File(folder).getName() + " (" + images.length + ")");
-                    Bitmap bitmap = BitmapUtil.makeBitmap(75, 10000, images[0].getAbsolutePath());
-                    bitmap = BitmapUtil.transform(null, bitmap, 75, 75, false);
+                    Bitmap bitmap = BitmapUtil.getSampledBitmap(images[0].getAbsolutePath(), 150,
+                            150, BitmapUtil.ScalingLogic.FIT);
                     cache.image.setImageBitmap(bitmap);
                 }
-            } catch (final Exception e) {
+            } catch (Exception ex) {
+                Log.e(TAG, "Got exception ", ex);
             }
         }
 

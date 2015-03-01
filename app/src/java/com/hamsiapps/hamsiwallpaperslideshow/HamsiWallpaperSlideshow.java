@@ -37,6 +37,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -149,53 +150,57 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
 
         @Override
         public void onCreate(SurfaceHolder surfaceHolder) {
-            super.onCreate(surfaceHolder);
-
-            // Register receiver for media events
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(Intent.ACTION_MEDIA_BAD_REMOVAL);
-            filter.addAction(Intent.ACTION_MEDIA_CHECKING);
-            filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
-            filter.addAction(Intent.ACTION_MEDIA_EJECT);
-            filter.addAction(Intent.ACTION_MEDIA_NOFS);
-            filter.addAction(Intent.ACTION_MEDIA_REMOVED);
-            filter.addAction(Intent.ACTION_MEDIA_SHARED);
-            filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
-            filter.addDataScheme("file");
-            mReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    String action = intent.getAction();
-                    if (action.equals(Intent.ACTION_MEDIA_MOUNTED)
-                            || action.equals(Intent.ACTION_MEDIA_CHECKING)) {
-                        mStorageReady = true;
-                        setTouchEventsEnabled(true);
-                        drawFrame();
-                    } else {
-                        mStorageReady = false;
-                        setTouchEventsEnabled(false);
-                        mHandler.removeCallbacks(mWorker);
+            try {
+                super.onCreate(surfaceHolder);
+                // Register receiver for media events
+                IntentFilter filter = new IntentFilter();
+                filter.addAction(Intent.ACTION_MEDIA_BAD_REMOVAL);
+                filter.addAction(Intent.ACTION_MEDIA_CHECKING);
+                filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
+                filter.addAction(Intent.ACTION_MEDIA_EJECT);
+                filter.addAction(Intent.ACTION_MEDIA_NOFS);
+                filter.addAction(Intent.ACTION_MEDIA_REMOVED);
+                filter.addAction(Intent.ACTION_MEDIA_SHARED);
+                filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
+                filter.addDataScheme("file");
+                mReceiver = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        String action = intent.getAction();
+                        if (action.equals(Intent.ACTION_MEDIA_MOUNTED)
+                                || action.equals(Intent.ACTION_MEDIA_CHECKING)) {
+                            mStorageReady = true;
+                            setTouchEventsEnabled(true);
+                            drawFrame();
+                        } else {
+                            mStorageReady = false;
+                            setTouchEventsEnabled(false);
+                            mHandler.removeCallbacks(mWorker);
+                        }
                     }
-                }
-            };
-            registerReceiver(mReceiver, filter);
+                };
+                registerReceiver(mReceiver, filter);
 
-            // Register receiver for screen on events
-            registerReceiver(new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    System.out.println(Intent.ACTION_SCREEN_ON);
-                    if (mScreenWake) {
-                        mLastDrawTime = 0;
-                        drawFrame();
+                // Register receiver for screen on events
+                registerReceiver(new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        System.out.println(Intent.ACTION_SCREEN_ON);
+                        if (mScreenWake) {
+                            mLastDrawTime = 0;
+                            drawFrame();
+                        }
                     }
-                }
-            }, new IntentFilter(Intent.ACTION_SCREEN_ON));
+                }, new IntentFilter(Intent.ACTION_SCREEN_ON));
 
-    		/* mStorageReady = (Environment.getExternalStorageState() ==
-                Environment.MEDIA_MOUNTED || Environment.getExternalStorageState() ==
-        			Environment.MEDIA_CHECKING); */
-            setTouchEventsEnabled(mStorageReady);
+                /* mStorageReady = (Environment.getExternalStorageState() ==
+                    Environment.MEDIA_MOUNTED || Environment.getExternalStorageState() ==
+                        Environment.MEDIA_CHECKING); */
+                setTouchEventsEnabled(mStorageReady);
+
+            } catch (Exception ex) {
+                Log.e("onCreate", "Got exception ", ex);
+            }
         }
 
         @Override
@@ -325,92 +330,96 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
         }
 
         void drawFrame(boolean _isSetAgain, boolean _isOpenApplicationIfNotExistAnyFile) {
-            String state = Environment.getExternalStorageState();
-            if (!state.equals(Environment.MEDIA_MOUNTED) &&
-                    !state.equals(Environment.MEDIA_MOUNTED_READ_ONLY)) {
-                return;
-            }
+            try{
+                String state = Environment.getExternalStorageState();
+                if (!state.equals(Environment.MEDIA_MOUNTED) &&
+                        !state.equals(Environment.MEDIA_MOUNTED_READ_ONLY)) {
+                    return;
+                }
 
-            Bitmap mBitmap = null;
+                Bitmap mBitmap = null;
 
-            try {
-                // Do we need to get a new image?
-                if ((mBitmapPath == null) ||
-                    (mDuration > 0 && mLastDrawTime < System.currentTimeMillis() - mDuration)) {
-                    // Get a list of files
-                    File[] files = BitmapUtil.listFiles(new File(mFolder), mRecurse, ImageFilter);
-                    if (files == null || files.length < 1) {
-                        if (_isOpenApplicationIfNotExistAnyFile) {
-                            Intent dialogIntent = new Intent(getBaseContext(),
-                                    com.hamsiapps.hamsiwallpaperslideshow.SettingsActivity.class);
-                            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            getApplication().startActivity(dialogIntent);
-                            return;
-                        }
-                        mBitmap = getDefaultBitmap();
-                        mBitmapPath = "default";
-                        // Save the current time
-                        mLastDrawTime = System.currentTimeMillis();
-                    } else {
-                        // Increment counter
-                        int nFiles = files.length;
-                        if (mRandom) {
-                            int i = mIndex;
-                            do {
-                                mIndex = (int) (Math.random() * nFiles);
-                            } while (nFiles > 1 && mIndex == i);
-                        } else {
-                            if (++mIndex >= nFiles) {
-                                mIndex = 0;
+                try {
+                    // Do we need to get a new image?
+                    if ((mBitmapPath == null) ||
+                        (mDuration > 0 && mLastDrawTime < System.currentTimeMillis() - mDuration)) {
+                        // Get a list of files
+                        File[] files = BitmapUtil.listFiles(new File(mFolder), mRecurse, ImageFilter);
+                        if (files == null || files.length < 1) {
+                            if (_isOpenApplicationIfNotExistAnyFile) {
+                                Intent dialogIntent = new Intent(getBaseContext(),
+                                        com.hamsiapps.hamsiwallpaperslideshow.SettingsActivity.class);
+                                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                getApplication().startActivity(dialogIntent);
+                                return;
                             }
+                            mBitmap = getDefaultBitmap();
+                            mBitmapPath = "default";
+                            // Save the current time
+                            mLastDrawTime = System.currentTimeMillis();
+                        } else {
+                            // Increment counter
+                            int nFiles = files.length;
+                            if (mRandom) {
+                                int i = mIndex;
+                                do {
+                                    mIndex = (int) (Math.random() * nFiles);
+                                } while (nFiles > 1 && mIndex == i);
+                            } else {
+                                if (++mIndex >= nFiles) {
+                                    mIndex = 0;
+                                }
+                            }
+
+                            mBitmapPath = files[mIndex].getAbsolutePath();
+                            mBitmap = getFormattedBitmap(mBitmapPath);
+
+                            // Save the current time
+                            mLastDrawTime = System.currentTimeMillis();
                         }
-
-                        mBitmapPath = files[mIndex].getAbsolutePath();
-                        mBitmap = getFormattedBitmap(mBitmapPath);
-
-                        // Save the current time
-                        mLastDrawTime = System.currentTimeMillis();
+                    } else if (_isSetAgain) {
+                        if (mBitmapPath.equals("default")) {
+                            mBitmap = getDefaultBitmap();
+                        } else {
+                            mBitmap = getFormattedBitmap(mBitmapPath);
+                        }
                     }
-                } else if (_isSetAgain) {
-                    if (mBitmapPath.equals("default")) {
-                        mBitmap = getDefaultBitmap();
-                    } else {
-                        mBitmap = getFormattedBitmap(mBitmapPath);
-                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
 
-            SurfaceHolder holder = getSurfaceHolder();
-            Canvas c = null;
-            try {
-                if (mBitmap != null) {
-                    int xPos = 0;
-                    int yPos = 0;
-                    if (mScroll) {
-                        xPos = 0 - (int) (mWidth * mXOffset);
-                        yPos = 0 - (int) (mHeight * mYOffset);
+                SurfaceHolder holder = getSurfaceHolder();
+                Canvas c = null;
+                try {
+                    if (mBitmap != null) {
+                        int xPos = 0;
+                        int yPos = 0;
+                        if (mScroll) {
+                            xPos = 0 - (int) (mWidth * mXOffset);
+                            yPos = 0 - (int) (mHeight * mYOffset);
+                        }
+                        try {
+                            // Get and Lock the canvas for writing
+                            c = holder.lockCanvas();
+                            c.drawColor(Color.BLACK);
+                            c.drawBitmap(mBitmap, xPos, yPos, mPaint);
+                            mBitmap.recycle();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                    try {
-                        // Get and Lock the canvas for writing
-                        c = holder.lockCanvas();
-                        c.drawColor(Color.BLACK);
-                        c.drawBitmap(mBitmap, xPos, yPos, mPaint);
-                        mBitmap.recycle();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                } finally {
+                    if (c != null) holder.unlockCanvasAndPost(c);
                 }
-            } finally {
-                if (c != null) holder.unlockCanvasAndPost(c);
-            }
 
-            // Reschedule the next redraw
-            mHandler.removeCallbacks(mWorker);
-            if (mVisible) {
-                mHandler.postDelayed(mWorker, 15000);
+                // Reschedule the next redraw
+                mHandler.removeCallbacks(mWorker);
+                if (mVisible) {
+                    mHandler.postDelayed(mWorker, 15000);
+                }
+            } catch (Exception ex) {
+                Log.e("drawFrame", "Got exception ", ex);
             }
         }
 
@@ -488,14 +497,14 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
         }
 
         private Bitmap getFormattedBitmap(String file) {
-            Bitmap bitmap = BitmapUtil.makeBitmap(Math.max(mMinWidth, mMinHeight),
-                    mMinWidth * mMinHeight, file);
+            Bitmap bitmap = BitmapUtil.getSampledBitmap(file, mMinWidth, mMinHeight,
+                    BitmapUtil.ScalingLogic.FIT);
             return getFormattedBitmap(bitmap);
         }
 
         private Bitmap getFormattedBitmap(int id) {
-            Bitmap bitmap = BitmapUtil.makeBitmap(Math.max(mMinWidth, mMinHeight),
-                    mMinWidth * mMinHeight, getResources(), id);
+            Bitmap bitmap = BitmapUtil.getSampledBitmap(getResources(), id, mMinWidth, mMinHeight,
+                    BitmapUtil.ScalingLogic.FIT);
             return getFormattedBitmap(bitmap);
         }
 
