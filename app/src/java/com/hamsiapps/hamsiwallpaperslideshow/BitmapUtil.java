@@ -310,12 +310,7 @@ public class BitmapUtil {
         int dx1 = Math.max(0, b1.getWidth() - targetWidth);
         int dy1 = Math.max(0, b1.getHeight() - targetHeight);
 
-        Bitmap b2 = Bitmap.createBitmap(
-                b1,
-                dx1 / 2,
-                dy1 / 2,
-                targetWidth,
-                targetHeight);
+        Bitmap b2 = Bitmap.createBitmap(b1, dx1 / 2, dy1 / 2, targetWidth, targetHeight);
         b1.recycle();
 
         return b2;
