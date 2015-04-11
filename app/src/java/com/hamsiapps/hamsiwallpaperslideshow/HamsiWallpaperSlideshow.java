@@ -145,6 +145,7 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
                     }
                     return false;
                 }
+
             });
         }
 

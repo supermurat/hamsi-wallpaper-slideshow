@@ -39,7 +39,7 @@
        android:textAppearance="?android:attr/textAppearanceLarge"
        android:maxLines="1"
        android:ellipsize="marquee"
-       android:textColor="#ffffffff"/>
+       android:textColor="#ffffffff" />
 
    <TextView
    	android:id="@+id/text2"
@@ -50,6 +50,7 @@
        android:text="/path/to/folder"
        android:textAppearance="?android:attr/textAppearanceSmall"
        android:maxLines="1"
-       android:ellipsize="marquee" />
+       android:ellipsize="marquee"
+    android:textColor="#ffaaaaaa" />
 
 </RelativeLayout>

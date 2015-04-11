@@ -29,12 +29,12 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Collection of utility functions used in this package.
  */
 public class BitmapUtil {
-    public static final int UNCONSTRAINED = -1;
     private static final String TAG = "BitmapUtil";
 
     public BitmapUtil() {
@@ -124,7 +124,7 @@ public class BitmapUtil {
      * destination dimensions might be adjusted to a smaller size than
      * requested.
      */
-    public static enum ScalingLogic {
+    public enum ScalingLogic {
         CROP, FIT
     }
 
@@ -184,7 +184,7 @@ public class BitmapUtil {
                 return new Rect(srcRectLeft, 0, srcRectLeft + srcRectWidth, srcHeight);
             } else {
                 final int srcRectHeight = (int)(srcWidth / dstAspect);
-                final int scrRectTop = (int)(srcHeight - srcRectHeight) / 2;
+                final int scrRectTop = (srcHeight - srcRectHeight) / 2;
                 return new Rect(0, scrRectTop, srcWidth, scrRectTop + srcRectHeight);
             }
         } else {
@@ -225,11 +225,9 @@ public class BitmapUtil {
             if (m == null) {
                 m = new Matrix();
             }
-            m.setRotate(degrees,
-                    (float) b.getWidth() / 2, (float) b.getHeight() / 2);
+            m.setRotate(degrees, (float) b.getWidth() / 2, (float) b.getHeight() / 2);
             try {
-                Bitmap b2 = Bitmap.createBitmap(
-                        b, 0, 0, b.getWidth(), b.getHeight(), m, true);
+                Bitmap b2 = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), m, true);
                 if (b != b2) {
                     b.recycle();
                     b = b2;
@@ -302,8 +300,8 @@ public class BitmapUtil {
         Bitmap b1;
         if (scaler != null) {
             // this is used for minithumb and crop, so we want to filter here.
-            b1 = Bitmap.createBitmap(source, 0, 0,
-                    source.getWidth(), source.getHeight(), scaler, true);
+            b1 = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), scaler,
+                    true);
             source.recycle();
         } else {
             b1 = source;
@@ -338,24 +336,21 @@ public class BitmapUtil {
         if (!recurse) {
             return directory.listFiles(filter);
         } else {
-            Collection<File> mFiles = new java.util.LinkedList<File>();
+            Collection<File> mFiles = new java.util.LinkedList<>();
             innerListFiles(mFiles, directory, filter);
-            return (File[]) mFiles.toArray(new File[mFiles.size()]);
+            return mFiles.toArray(new File[mFiles.size()]);
         }
     }
 
-    public static void innerListFiles(Collection<File> files, File directory,
-                                      FileFilter filter) {
+    public static void innerListFiles(Collection<File> files, File directory, FileFilter filter) {
         File[] found = directory.listFiles();
         if (found != null) {
-            for (int i = 0; i < found.length; i++) {
-                if (found[i].isDirectory()) {
-                    innerListFiles(files, found[i], filter);
+            for (File aFound : found) {
+                if (aFound.isDirectory()) {
+                    innerListFiles(files, aFound, filter);
                 } else {
-                    File[] found2 = directory.listFiles((FileFilter) filter);
-                    for (int j = 0; j < found2.length; j++) {
-                        files.add(found2[j]);
-                    }
+                    File[] found2 = directory.listFiles(filter);
+                    Collections.addAll(files, found2);
                 }
             }
         }
