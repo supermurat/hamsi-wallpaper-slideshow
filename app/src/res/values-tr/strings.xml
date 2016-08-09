@@ -97,6 +97,11 @@
     <string name="preferences_rotate_summary">Resimlerin gerçek ekran yönünü değiştirme</string>
     <string name="preferences_rotate_default">false</string>
 
+    <string name="preferences_fit_in_screen_key">fit_in_screen</string>
+    <string name="preferences_fit_in_screen_title">Ekrana sığdır</string>
+    <string name="preferences_fit_in_screen_summary">Ekranı doldurmak yerine resmi ekrana sığdır</string>
+    <string name="preferences_fit_in_screen_default">false</string>
+
     <string name="preferences_scroll_key">scroll</string>
     <string name="preferences_scroll_title">Duvar Kağıdını Kaydır</string>
     <string name="preferences_scroll_summary">Ana ekranı değiştirirken resimleride kaydır</string>

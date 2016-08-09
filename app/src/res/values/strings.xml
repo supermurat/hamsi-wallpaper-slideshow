@@ -91,6 +91,11 @@
     <string name="preferences_rotate_summary">Keep original screen orientation of photos</string>
     <string name="preferences_rotate_default">false</string>
 
+    <string name="preferences_fit_in_screen_key">fit_in_screen</string>
+    <string name="preferences_fit_in_screen_title">Fit in screen</string>
+    <string name="preferences_fit_in_screen_summary">Fit photos in the screen instead of filling the screen</string>
+    <string name="preferences_fit_in_screen_default">false</string>
+
     <string name="preferences_scroll_key">scroll</string>
     <string name="preferences_scroll_title">Scroll wallpaper</string>
     <string name="preferences_scroll_summary">Scroll wallpaper when changing home screens</string>

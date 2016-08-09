@@ -113,39 +113,47 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
         private int mDuration = 0;
         private boolean mRandom = false;
         private boolean mRotate = false;
+        private boolean mFitInScreen = false;
         private boolean mScroll = false;
         private boolean mRecurse = false;
         private boolean mTouchEvents = false;
         private boolean mScreenWake = false;
 
         WallpaperEngine() {
-            final Paint paint = mPaint;
-            paint.setColor(Color.WHITE);
-            paint.setTextAlign(Paint.Align.CENTER);
-            paint.setAntiAlias(true);
-            paint.setTextSize(18f);
+            try {
+                final Paint paint = mPaint;
+                paint.setColor(Color.WHITE);
+                paint.setTextAlign(Paint.Align.CENTER);
+                paint.setAntiAlias(true);
+                paint.setTextSize(18f);
 
-            mPrefs = getSharedPreferences(SHARED_PREFS_NAME, 0);
-            mPrefs.registerOnSharedPreferenceChangeListener(this);
+                mPrefs = getSharedPreferences(SHARED_PREFS_NAME, 0);
+                mPrefs.registerOnSharedPreferenceChangeListener(this);
 
-            // Read the preferences
-            onSharedPreferenceChanged(mPrefs, null);
-            if (Build.VERSION.SDK_INT >= 15 ) {
-                setOffsetNotificationsEnabled(true);
+                // Read the preferences
+                onSharedPreferenceChanged(mPrefs, null);
+                if (Build.VERSION.SDK_INT >= 15 ) {
+                    setOffsetNotificationsEnabled(true);
+                }
+                setTouchEventsEnabled(true);
+            } catch (Exception ex) {
+                Log.e("HamsiWallpaperSlideshow", "WallpaperEngine: ", ex);
             }
-            setTouchEventsEnabled(true);
 
             doubleTapDetector = new GestureDetector(HamsiWallpaperSlideshow.this, new SimpleOnGestureListener() {
                 @Override
                 public boolean onDoubleTap(MotionEvent e) {
-                    if (mTouchEvents) {
-                        mLastDrawTime = 0;
-                        drawFrame(false, true);
-                        return true;
+                    try {
+                        if (mTouchEvents) {
+                            mLastDrawTime = 0;
+                            drawFrame(false, true);
+                            return true;
+                        }
+                    } catch (Exception ex) {
+                        Log.e("HamsiWallpaperSlideshow", "doubleTapDetector:onDoubleTap: ", ex);
                     }
                     return false;
                 }
-
             });
         }
 
@@ -198,9 +206,8 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
                     Environment.MEDIA_MOUNTED || Environment.getExternalStorageState() ==
                         Environment.MEDIA_CHECKING); */
                 setTouchEventsEnabled(mStorageReady);
-
             } catch (Exception ex) {
-                Log.e("onCreate", "Got exception ", ex);
+                Log.e("HamsiWallpaperSlideshow", "onCreate: ", ex);
             }
         }
 
@@ -213,23 +220,31 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
 
         @Override
         public void onVisibilityChanged(boolean visible) {
-            mVisible = visible;
-            if (visible) {
-                drawFrame();
-            } else {
-                mHandler.removeCallbacks(mWorker);
+            try {
+                mVisible = visible;
+                if (visible) {
+                    drawFrame();
+                } else {
+                    mHandler.removeCallbacks(mWorker);
+                }
+            } catch (Exception ex) {
+                Log.e("HamsiWallpaperSlideshow", "onVisibilityChanged: ", ex);
             }
         }
 
         @Override
         public void onSurfaceChanged(SurfaceHolder holder, int format,
                                      int width, int height) {
-            super.onSurfaceChanged(holder, format, width, height);
-            mWidth = width;
-            mHeight = height;
-            mMinWidth = width * 2; // cheap hack for scrolling
-            mMinHeight = height;
-            drawFrame(true);
+            try {
+                super.onSurfaceChanged(holder, format, width, height);
+                mWidth = width;
+                mHeight = height;
+                mMinWidth = width * 2; // cheap hack for scrolling
+                mMinHeight = height;
+                drawFrame(true);
+            } catch (Exception ex) {
+                Log.e("HamsiWallpaperSlideshow", "onSurfaceChanged: ", ex);
+            }
         }
 
         @Override
@@ -248,9 +263,13 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
         @Override
         public void onOffsetsChanged(float xOffset, float yOffset,
                                      float xStep, float yStep, int xPixels, int yPixels) {
-            mXOffset = xOffset;
-            mYOffset = yOffset;
-            drawFrame(true);
+            try {
+                mXOffset = xOffset;
+                mYOffset = yOffset;
+                drawFrame(true);
+            } catch (Exception ex) {
+                Log.e("HamsiWallpaperSlideshow", "onOffsetsChanged: ", ex);
+            }
         }
 
         @Override
@@ -262,63 +281,73 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
                                               String key) {
-            final Resources res = getResources();
+            try {
+                final Resources res = getResources();
 
-            if (key == null) {
-                mFolder = sharedPreferences.getString(
-                        res.getString(R.string.preferences_folder_key),
-                        res.getString(R.string.preferences_folder_default));
-                mDuration = Integer.valueOf(sharedPreferences.getString(
-                        res.getString(R.string.preferences_duration_key),
-                        res.getString(R.string.preferences_duration_default)));
-                mRandom = sharedPreferences.getBoolean(
-                        res.getString(R.string.preferences_random_key),
-                        Boolean.valueOf(res.getString(R.string.preferences_random_default)));
-                mRotate = sharedPreferences.getBoolean(
-                        res.getString(R.string.preferences_rotate_key),
-                        Boolean.valueOf(res.getString(R.string.preferences_rotate_default)));
-                mScroll = sharedPreferences.getBoolean(
-                        res.getString(R.string.preferences_scroll_key),
-                        Boolean.valueOf(res.getString(R.string.preferences_scroll_default)));
-                mRecurse = sharedPreferences.getBoolean(
-                        res.getString(R.string.preferences_recurse_key),
-                        Boolean.valueOf(res.getString(R.string.preferences_recurse_default)));
-                mTouchEvents = sharedPreferences.getBoolean(
-                        res.getString(R.string.preferences_doubletap_key),
-                        Boolean.valueOf(res.getString(R.string.preferences_doubletap_default)));
-                mScreenWake = sharedPreferences.getBoolean(
-                        res.getString(R.string.preferences_screen_awake_key),
-                        Boolean.valueOf(res.getString(R.string.preferences_screen_awake_default)));
-                mLastDrawTime = 0;
-            } else if (key.equals(res.getString(R.string.preferences_folder_key))) {
-                mFolder = sharedPreferences.getString(key,
-                        res.getString(R.string.preferences_folder_default));
-                mIndex = -1;
-                mLastDrawTime = 0;
-            } else if (key.equals(res.getString(R.string.preferences_duration_key))) {
-                mDuration = Integer.parseInt(sharedPreferences.getString(key,
-                        res.getString(R.string.preferences_duration_default)));
-            } else if (key.equals(res.getString(R.string.preferences_random_key))) {
-                mRandom = sharedPreferences.getBoolean(key,
-                        Boolean.valueOf(res.getString(R.string.preferences_random_default)));
-            } else if (key.equals(res.getString(R.string.preferences_rotate_key))) {
-                mRotate = sharedPreferences.getBoolean(key,
-                        Boolean.valueOf(res.getString(R.string.preferences_rotate_default)));
-            } else if (key.equals(res.getString(R.string.preferences_scroll_key))) {
-                mScroll = sharedPreferences.getBoolean(key,
-                        Boolean.valueOf(res.getString(R.string.preferences_scroll_default)));
-                if (mScroll) {
+                if (key == null) {
+                    mFolder = sharedPreferences.getString(
+                            res.getString(R.string.preferences_folder_key),
+                            res.getString(R.string.preferences_folder_default));
+                    mDuration = Integer.valueOf(sharedPreferences.getString(
+                            res.getString(R.string.preferences_duration_key),
+                            res.getString(R.string.preferences_duration_default)));
+                    mRandom = sharedPreferences.getBoolean(
+                            res.getString(R.string.preferences_random_key),
+                            Boolean.valueOf(res.getString(R.string.preferences_random_default)));
+                    mRotate = sharedPreferences.getBoolean(
+                            res.getString(R.string.preferences_rotate_key),
+                            Boolean.valueOf(res.getString(R.string.preferences_rotate_default)));
+                    mFitInScreen = sharedPreferences.getBoolean(
+                            res.getString(R.string.preferences_fit_in_screen_key),
+                            Boolean.valueOf(res.getString(R.string.preferences_fit_in_screen_default)));
+                    mScroll = sharedPreferences.getBoolean(
+                            res.getString(R.string.preferences_scroll_key),
+                            Boolean.valueOf(res.getString(R.string.preferences_scroll_default)));
+                    mRecurse = sharedPreferences.getBoolean(
+                            res.getString(R.string.preferences_recurse_key),
+                            Boolean.valueOf(res.getString(R.string.preferences_recurse_default)));
+                    mTouchEvents = sharedPreferences.getBoolean(
+                            res.getString(R.string.preferences_doubletap_key),
+                            Boolean.valueOf(res.getString(R.string.preferences_doubletap_default)));
+                    mScreenWake = sharedPreferences.getBoolean(
+                            res.getString(R.string.preferences_screen_awake_key),
+                            Boolean.valueOf(res.getString(R.string.preferences_screen_awake_default)));
                     mLastDrawTime = 0;
+                } else if (key.equals(res.getString(R.string.preferences_folder_key))) {
+                    mFolder = sharedPreferences.getString(key,
+                            res.getString(R.string.preferences_folder_default));
+                    mIndex = -1;
+                    mLastDrawTime = 0;
+                } else if (key.equals(res.getString(R.string.preferences_duration_key))) {
+                    mDuration = Integer.parseInt(sharedPreferences.getString(key,
+                            res.getString(R.string.preferences_duration_default)));
+                } else if (key.equals(res.getString(R.string.preferences_random_key))) {
+                    mRandom = sharedPreferences.getBoolean(key,
+                            Boolean.valueOf(res.getString(R.string.preferences_random_default)));
+                } else if (key.equals(res.getString(R.string.preferences_rotate_key))) {
+                    mRotate = sharedPreferences.getBoolean(key,
+                            Boolean.valueOf(res.getString(R.string.preferences_rotate_default)));
+                } else if (key.equals(res.getString(R.string.preferences_fit_in_screen_key))) {
+                    mFitInScreen = sharedPreferences.getBoolean(key,
+                            Boolean.valueOf(res.getString(R.string.preferences_fit_in_screen_default)));
+                } else if (key.equals(res.getString(R.string.preferences_scroll_key))) {
+                    mScroll = sharedPreferences.getBoolean(key,
+                            Boolean.valueOf(res.getString(R.string.preferences_scroll_default)));
+                    if (mScroll) {
+                        mLastDrawTime = 0;
+                    }
+                } else if (key.equals(res.getString(R.string.preferences_recurse_key))) {
+                    mRecurse = sharedPreferences.getBoolean(key,
+                            Boolean.valueOf(res.getString(R.string.preferences_recurse_default)));
+                } else if (key.equals(res.getString(R.string.preferences_doubletap_key))) {
+                    mTouchEvents = sharedPreferences.getBoolean(key,
+                            Boolean.valueOf(res.getString(R.string.preferences_doubletap_default)));
+                } else if (key.equals(res.getString(R.string.preferences_screen_awake_key))) {
+                    mScreenWake = sharedPreferences.getBoolean(key,
+                            Boolean.valueOf(res.getString(R.string.preferences_screen_awake_default)));
                 }
-            } else if (key.equals(res.getString(R.string.preferences_recurse_key))) {
-                mRecurse = sharedPreferences.getBoolean(key,
-                        Boolean.valueOf(res.getString(R.string.preferences_recurse_default)));
-            } else if (key.equals(res.getString(R.string.preferences_doubletap_key))) {
-                mTouchEvents = sharedPreferences.getBoolean(key,
-                        Boolean.valueOf(res.getString(R.string.preferences_doubletap_default)));
-            } else if (key.equals(res.getString(R.string.preferences_screen_awake_key))) {
-                mScreenWake = sharedPreferences.getBoolean(key,
-                        Boolean.valueOf(res.getString(R.string.preferences_screen_awake_default)));
+            } catch (Exception ex) {
+                Log.e("HamsiWallpaperSlideshow", "onSharedPreferenceChanged: ", ex);
             }
         }
 
@@ -424,8 +453,7 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
             }
         }
 
-        private Bitmap getDefaultBitmap()
-        {
+        private Bitmap getDefaultBitmap() {
             DisplayMetrics metrics = getResources().getDisplayMetrics();
             Bitmap mBitmap = null;
             String note1 = getString(R.string.no_photos_found_1);
@@ -492,7 +520,7 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
 
             // Scale bitmap
             if (width != targetWidth || height != targetHeight) {
-                bitmap = BitmapUtil.transform(mScaler, bitmap, targetWidth, targetHeight, true);
+                bitmap = BitmapUtil.transform(mScaler, bitmap, targetWidth, targetHeight, true, mFitInScreen);
             }
             return bitmap;
         }

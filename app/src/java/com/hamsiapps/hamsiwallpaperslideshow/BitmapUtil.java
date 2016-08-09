@@ -240,20 +240,61 @@ public class BitmapUtil {
         return b;
     }
 
+    public static Bitmap scaleTo(Matrix scaler,
+                                   Bitmap source,
+                                   int targetWidth,
+                                   int targetHeight,
+                                   boolean fitInScreen) {
+        float bitmapWidthF = source.getWidth();
+        float bitmapHeightF = source.getHeight();
+
+        float bitmapAspect = bitmapWidthF / bitmapHeightF;
+        float viewAspect = (float) targetWidth / targetHeight;
+
+        float scale = 0;
+        float scaleH = targetHeight / bitmapHeightF;
+        float scaleW = targetWidth / bitmapWidthF;
+
+        if (fitInScreen && scaleH < scaleW){
+            scale = scaleH;
+        } else if (fitInScreen && scaleH >= scaleW) {
+            scale = scaleW;
+        } else if (bitmapAspect > viewAspect) {
+            scale = scaleH;
+        } else {
+            scale = scaleW;
+        }
+
+        if (scale != 0 && (scale < .9F || scale > 1F)) {
+            scaler.setScale(scale, scale);
+        } else {
+            scaler = null;
+        }
+
+        Bitmap b1;
+        if (scaler != null) {
+            // this is used for minithumb and crop, so we want to filter here.
+            b1 = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), scaler,
+                    true);
+            source.recycle();
+        } else {
+            b1 = source;
+        }
+        return b1;
+    }
+
     public static Bitmap transform(Matrix scaler,
                                    Bitmap source,
                                    int targetWidth,
                                    int targetHeight,
-                                   boolean scaleUp) {
+                                   boolean scaleUp,
+                                   boolean fitInScreen) {
+        if (fitInScreen) {
+            source = scaleTo(scaler, source, targetWidth, targetHeight, true);
+        }
         int deltaX = source.getWidth() - targetWidth;
         int deltaY = source.getHeight() - targetHeight;
-        if (!scaleUp && (deltaX < 0 || deltaY < 0)) {
-            /*
-             * In this case the bitmap is smaller, at least in one dimension,
-             * than the target.  Transform it by placing as much of the image
-             * as possible into the target and leaving the top/bottom or
-             * left/right (or both) black.
-             */
+        if ((!scaleUp || fitInScreen) && (deltaX < 0 || deltaY < 0)) {
             Bitmap b2 = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(b2);
 
@@ -275,37 +316,8 @@ public class BitmapUtil {
             source.recycle();
             return b2;
         }
-        float bitmapWidthF = source.getWidth();
-        float bitmapHeightF = source.getHeight();
 
-        float bitmapAspect = bitmapWidthF / bitmapHeightF;
-        float viewAspect = (float) targetWidth / targetHeight;
-
-        if (bitmapAspect > viewAspect) {
-            float scale = targetHeight / bitmapHeightF;
-            if (scale < .9F || scale > 1F) {
-                scaler.setScale(scale, scale);
-            } else {
-                scaler = null;
-            }
-        } else {
-            float scale = targetWidth / bitmapWidthF;
-            if (scale < .9F || scale > 1F) {
-                scaler.setScale(scale, scale);
-            } else {
-                scaler = null;
-            }
-        }
-
-        Bitmap b1;
-        if (scaler != null) {
-            // this is used for minithumb and crop, so we want to filter here.
-            b1 = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), scaler,
-                    true);
-            source.recycle();
-        } else {
-            b1 = source;
-        }
+        Bitmap b1 = scaleTo(scaler, source, targetWidth, targetHeight, false);
 
         int dx1 = Math.max(0, b1.getWidth() - targetWidth);
         int dy1 = Math.max(0, b1.getHeight() - targetHeight);

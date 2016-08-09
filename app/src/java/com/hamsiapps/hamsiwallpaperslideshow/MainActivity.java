@@ -29,6 +29,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -77,29 +78,33 @@ public class MainActivity extends Activity {
         btnAbout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String versionName;
                 try {
-                    PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
-                    versionName = pi.versionName;
-                } catch (PackageManager.NameNotFoundException e) {
-                    versionName = "";
+                    String versionName;
+                    try {
+                        PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
+                        versionName = pi.versionName;
+                    } catch (PackageManager.NameNotFoundException e) {
+                        versionName = "";
+                    }
+                    LayoutInflater inflater = getLayoutInflater();
+                    View aboutView = inflater.inflate(R.layout.about_dialog, null);
+                    TextView aboutText = (TextView) aboutView.findViewById(R.id.text1);
+                    aboutText.setText(Html.fromHtml(getString(R.string.about_text)
+                            .replaceAll("\\{VersionName\\}", versionName)));
+                    AlertDialog.Builder builder = new AlertDialog.Builder(me);
+                    builder.setIcon(R.drawable.hamsi_app_icon)
+                            .setTitle(R.string.app_name)
+                            .setView(aboutView)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    builder.show();
+                } catch (Exception ex) {
+                    Log.e("MainActivity", "btnAbout:onClick: ", ex);
                 }
-                LayoutInflater inflater = getLayoutInflater();
-                View aboutView = inflater.inflate(R.layout.about_dialog, null);
-                TextView aboutText = (TextView) aboutView.findViewById(R.id.text1);
-                aboutText.setText(Html.fromHtml(getString(R.string.about_text)
-                        .replaceAll("\\{VersionName\\}", versionName)));
-                AlertDialog.Builder builder = new AlertDialog.Builder(me);
-                builder.setIcon(R.drawable.hamsi_app_icon)
-                        .setTitle(R.string.app_name)
-                        .setView(aboutView)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                builder.show();
             }
         });
 
@@ -107,17 +112,21 @@ public class MainActivity extends Activity {
         btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String my_package_name = getPackageName();
-                String url = "";
                 try {
-                    me.getPackageManager().getPackageInfo("com.android.vending", 0);
-                    url = "market://details?id=" + my_package_name;
-                } catch ( final Exception e ) {
-                    url = "https://play.google.com/store/apps/details?id=" + my_package_name;
+                    final String my_package_name = getPackageName();
+                    String url = "";
+                    try {
+                        me.getPackageManager().getPackageInfo("com.android.vending", 0);
+                        url = "market://details?id=" + my_package_name;
+                    } catch ( final Exception e ) {
+                        url = "https://play.google.com/store/apps/details?id=" + my_package_name;
+                    }
+                    final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                } catch (Exception ex) {
+                    Log.e("MainActivity", "btnLike:onClick: ", ex);
                 }
-                final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
             }
         });
     }

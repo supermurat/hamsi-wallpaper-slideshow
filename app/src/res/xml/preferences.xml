@@ -53,6 +53,12 @@
 		android:summary="@string/preferences_rotate_summary"
 		android:defaultValue="@string/preferences_rotate_default" />
 
+	<CheckBoxPreference android:id="@+id/prefs_fit_in_screen"
+						android:key="@string/preferences_fit_in_screen_key"
+						android:title="@string/preferences_fit_in_screen_title"
+						android:summary="@string/preferences_fit_in_screen_summary"
+						android:defaultValue="@string/preferences_fit_in_screen_default" />
+
 <!--
 	<CheckBoxPreference android:id="@+id/prefs_scroll"
 		android:key="@string/preferences_scroll_key"
