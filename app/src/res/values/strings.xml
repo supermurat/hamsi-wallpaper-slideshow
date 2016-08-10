@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright (C) 2014 Murat Demir <mopened@gmail.com>
+    Copyright (C) 2016 Murat Demir <mopened@gmail.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 		Because it makes people smile :-)</p>
 		<p>Also you can visit project site :<br>
 		<a href="http://hamsiapps.com/Hamsi-Wallpaper-Slideshow">http://hamsiapps.com/en/Hamsi-Wallpaper-Slideshow</a>.</p>
-		<p>&copy; 2014 <i>Hamsi Apps</i>.</p>
+		<p>&copy; 2016 <i>Hamsi Apps</i>.</p>
 		]]></string>
     <string name="warning_scroll">All photos will be stretched to fill your home screens. If you use low resolution or portrait style photos, this can result in poor image quality. For best results, use wallpaper scrolling with desktop sized photos (640x480, 1024x768, 1280x720,
         etc). Note: This feature won`t work properly in some devices (TouchWiz). </string>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright (C) 2014 Murat Demir <mopened@gmail.com>
+    Copyright (C) 2016 Murat Demir <mopened@gmail.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 		Çünkü o bir tebessüm kaynağı :-)</p>
 		<p>Ayrıca projemizin web sitesini de ziyaret edebilirsiniz :<br>
 		<a href="http://hamsiapps.com/Hamsi-Wallpaper-Slideshow">http://hamsiapps.com/Hamsi-Wallpaper-Slideshow</a>.</p>
-		<p>&copy; 2014 <i>Hamsi Apps</i>.</p>
+		<p>&copy; 2016 <i>Hamsi Apps</i>.</p>
 		]]></string>
     <string name="warning_scroll">Tüm resimler ana ekranı doldurmak üzere uzatılacaktır. Eğer
         düşük çözünürlüklü veya portre tarzında resimler kullanıyorsanız, düşük görsel kalitesi
