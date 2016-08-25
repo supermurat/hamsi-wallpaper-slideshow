@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
@@ -38,28 +39,41 @@ import java.util.Collection;
 
 public class SelectFolderActivity extends ListActivity {
 
+    private static final String TAG = "SelectFolderActivity";
     public static FileFilter mImageFilter = new FileFilter() {
         public boolean accept(final File file) {
-            final String name = file.getName();
-            final String ext = BitmapUtil.getExtension(name);
+            try {
+                String name = file.getName();
+                String ext = BitmapUtil.getExtension(name);
 
-            if (ext == null)
-                return false;
+                if (ext == null)
+                    return false;
 
-            if (!ext.equals("jpg") && !ext.equals("jpeg") && !ext.equals("png") && !ext.equals("gif"))
-                return false;
+                if (!ext.equals("jpg") && !ext.equals("jpeg") && !ext.equals("png") && !ext.equals("gif"))
+                    return false;
 
-            return !name.toLowerCase().equals("albumart.jpg");
+                return !name.toLowerCase().equals("albumart.jpg");
+            } catch (Exception ex) {
+                // Ignore and continue
+                Log.e(TAG, "BUG:mImageFilter ", ex);
+            }
+            return false;
         }
     };
     private final FileFilter mFolderFilter = new FileFilter() {
         public boolean accept(final File file) {
-            if (!file.isDirectory())
-                return false;
-            else if (file.getName().startsWith("."))
-                return false;
-            else
-                return !new File(file, ".nomedia").exists();
+            try {
+                if (!file.isDirectory())
+                    return false;
+                else if (file.getName().startsWith("."))
+                    return false;
+                else
+                    return !new File(file, ".nomedia").exists();
+            } catch (Exception ex) {
+                // Ignore and continue
+                Log.e(TAG, "BUG:mFolderFilter ", ex);
+            }
+            return false;
         }
     };
     private final AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
@@ -88,39 +102,67 @@ public class SelectFolderActivity extends ListActivity {
         Context mContext = null;
         ProgressDialog mProgressDialog = null;
 
-        public SearchFoldersTask(final Context context) {
+        SearchFoldersTask(final Context context) {
             mContext = context;
         }
 
         @Override
         protected String[] doInBackground(final Void... params) {
-            // Search external storage for all public folders
-            final ArrayList<File> folders = new ArrayList<File>();
-            listDirectories(folders, Environment.getExternalStorageDirectory(),
-                    mFolderFilter);
+            try {
+                // Search external storage for all public folders
+                final ArrayList<File> folders = new ArrayList<File>();
+                listDirectories(folders, Environment.getExternalStorageDirectory());
 
-            // Filter for folder only containing images
-            final ArrayList<String> result = new ArrayList<String>();
-            for (final File f : folders) {
-                if (f.listFiles(mImageFilter).length > 0) {
-                    result.add(f.toString());
+                // Filter for folder only containing images
+                final ArrayList<String> result = new ArrayList<String>();
+                listDirectoriesThatHaveImages(result, folders);
+
+                if (folders.size() == 0 || result.size() == 0) {
+                    folders.clear();
+                    result.clear();
+                    listDirectories(folders, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getParentFile());
+                    listDirectoriesThatHaveImages(result, folders);
                 }
-            }
 
-            final String[] temp = new String[result.size()];
-            result.toArray(temp);
-            return temp;
+                final String[] temp = new String[result.size()];
+                result.toArray(temp);
+                return temp;
+            } catch (Exception ex) {
+                // Ignore and continue
+                Log.e(TAG, "BUG:doInBackground ", ex);
+            }
+            return new String[0];
         }
 
-        private void listDirectories(final Collection<File> files, final File directory,
-                                     final FileFilter filter) {
-            final File[] found = directory.listFiles(filter);
-            if (found != null) {
-                for (int i = 0; i < found.length; i++) {
-                    files.add(found[i]);
-                    if (found[i].isDirectory()) {
-                        listDirectories(files, found[i], filter);
+        private void listDirectories(final Collection<File> files, final File directory) {
+            try {
+                if (directory.isDirectory() && directory.exists()) {
+                    final File[] found = directory.listFiles(mFolderFilter);
+                    if (found != null) {
+                        for (int i = 0; i < found.length; i++) {
+                            files.add(found[i]);
+                            listDirectories(files, found[i]);
+                        }
                     }
+                }
+            } catch (Exception ex) {
+                // Ignore and continue
+                Log.e(TAG, "BUG:listDirectories ", ex);
+            }
+        }
+
+        private void listDirectoriesThatHaveImages(final ArrayList<String> result, final ArrayList<File> folders) {
+            for (final File f : folders) {
+                try {
+                    if (f.isDirectory() && f.exists()) {
+                        final File[] found = f.listFiles(mImageFilter);
+                        if (found != null && found.length > 0) {
+                            result.add(f.toString());
+                        }
+                    }
+                } catch (Exception ex) {
+                    // Ignore and continue
+                    Log.e(TAG, "BUG:listDirectoriesThatHaveImages ", ex);
                 }
             }
         }
