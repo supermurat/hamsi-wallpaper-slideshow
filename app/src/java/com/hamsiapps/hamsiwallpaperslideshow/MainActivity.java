@@ -17,6 +17,7 @@
 
 package com.hamsiapps.hamsiwallpaperslideshow;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.WallpaperManager;
@@ -38,97 +39,123 @@ import android.widget.TextView;
 public class MainActivity extends Activity {
 
     private Activity me;
+    private static final String TAG = "MainActivity";
 
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_activity);
+        try {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.main_activity);
 
-        me = this;
+            me = this;
 
-        TextView tvHowToEnable = (TextView) findViewById(R.id.tvHowToEnable);
-        tvHowToEnable.setText(Html.fromHtml(getString(R.string.how_to_enable)));
+            TextView tvHowToEnable = (TextView) findViewById(R.id.tvHowToEnable);
+            tvHowToEnable.setText(Html.fromHtml(getString(R.string.how_to_enable)));
 
-        Button btnSetWallpaper = (Button) findViewById(R.id.btnSetWallpaper);
-        btnSetWallpaper.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent();
-                if (Build.VERSION.SDK_INT > 15) {
-                    i.setAction(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
-                    String p = HamsiWallpaperSlideshow.class.getPackage().getName();
-                    String c = HamsiWallpaperSlideshow.class.getCanonicalName();
-                    i.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT, new ComponentName(p, c));
-                } else {
-                    i.setAction(WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER);
-                }
-                startActivityForResult(i, 0);
-            }
-        });
-
-        Button btnConfigure = (Button) findViewById(R.id.btnConfigure);
-        btnConfigure.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
-                startActivity(i);
-            }
-        });
-
-        Button btnAbout = (Button) findViewById(R.id.btnAbout);
-        btnAbout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    String versionName;
-                    try {
-                        PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
-                        versionName = pi.versionName;
-                    } catch (PackageManager.NameNotFoundException e) {
-                        versionName = "";
+            Button btnSetWallpaper = (Button) findViewById(R.id.btnSetWallpaper);
+            btnSetWallpaper.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent();
+                    if (Build.VERSION.SDK_INT > 15) {
+                        i.setAction(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
+                        String p = HamsiWallpaperSlideshow.class.getPackage().getName();
+                        String c = HamsiWallpaperSlideshow.class.getCanonicalName();
+                        i.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT, new ComponentName(p, c));
+                    } else {
+                        i.setAction(WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER);
                     }
-                    LayoutInflater inflater = getLayoutInflater();
-                    View aboutView = inflater.inflate(R.layout.about_dialog, null);
-                    TextView aboutText = (TextView) aboutView.findViewById(R.id.text1);
-                    aboutText.setText(Html.fromHtml(getString(R.string.about_text)
-                            .replaceAll("\\{VersionName\\}", versionName)));
-                    AlertDialog.Builder builder = new AlertDialog.Builder(me);
-                    builder.setIcon(R.drawable.hamsi_app_icon)
-                            .setTitle(R.string.app_name)
-                            .setView(aboutView)
-                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    builder.show();
-                } catch (Exception ex) {
-                    Log.e("MainActivity", "btnAbout:onClick: ", ex);
+                    startActivityForResult(i, 0);
                 }
-            }
-        });
+            });
 
-        Button btnLike = (Button) findViewById(R.id.btnLike);
-        btnLike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    final String my_package_name = getPackageName();
-                    String url = "";
-                    try {
-                        me.getPackageManager().getPackageInfo("com.android.vending", 0);
-                        url = "market://details?id=" + my_package_name;
-                    } catch ( final Exception e ) {
-                        url = "https://play.google.com/store/apps/details?id=" + my_package_name;
-                    }
-                    final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                } catch (Exception ex) {
-                    Log.e("MainActivity", "btnLike:onClick: ", ex);
+            Button btnConfigure = (Button) findViewById(R.id.btnConfigure);
+            btnConfigure.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
+                    startActivity(i);
                 }
-            }
-        });
+            });
+
+            Button btnAbout = (Button) findViewById(R.id.btnAbout);
+            btnAbout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        String versionName;
+                        try {
+                            PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
+                            versionName = pi.versionName;
+                        } catch (PackageManager.NameNotFoundException e) {
+                            versionName = "";
+                        }
+                        LayoutInflater inflater = getLayoutInflater();
+                        View aboutView = inflater.inflate(R.layout.about_dialog, null);
+                        TextView aboutText = (TextView) aboutView.findViewById(R.id.text1);
+                        aboutText.setText(Html.fromHtml(getString(R.string.about_text)
+                                .replaceAll("\\{VersionName\\}", versionName)));
+                        AlertDialog.Builder builder = new AlertDialog.Builder(me);
+                        builder.setIcon(R.drawable.hamsi_app_icon)
+                                .setTitle(R.string.app_name)
+                                .setView(aboutView)
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        builder.show();
+                    } catch (Exception ex) {
+                        Log.e("MainActivity", "btnAbout:onClick: ", ex);
+                    }
+                }
+            });
+
+            Button btnLike = (Button) findViewById(R.id.btnLike);
+            btnLike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        final String my_package_name = getPackageName();
+                        String url = "";
+                        try {
+                            me.getPackageManager().getPackageInfo("com.android.vending", 0);
+                            url = "market://details?id=" + my_package_name;
+                        } catch ( final Exception e ) {
+                            url = "https://play.google.com/store/apps/details?id=" + my_package_name;
+                        }
+                        final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    } catch (Exception ex) {
+                        Log.e("MainActivity", "btnLike:onClick: ", ex);
+                    }
+                }
+            });
+
+            checkForPermissions();
+        } catch (Exception ex) {
+            Log.e(TAG, "Got exception ", ex);
+        }
     }
+
+    protected void checkForPermissions() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                        checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 5);
+                }
+            }
+        } catch (Exception ex) {
+            Log.e(TAG, "Got exception ", ex);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+
+    }
+
 
 }

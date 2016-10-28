@@ -17,15 +17,19 @@
 
 package com.hamsiapps.hamsiwallpaperslideshow;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.util.Log;
 
 public class SettingsActivity extends PreferenceActivity {
 
@@ -33,54 +37,33 @@ public class SettingsActivity extends PreferenceActivity {
 
     Context mContext;
     ListPreference mPath;
+    private static final String TAG = "SettingsActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mContext = this;
+        try {
+            super.onCreate(savedInstanceState);
+            mContext = this;
 
-        getPreferenceManager().setSharedPreferencesName(HamsiWallpaperSlideshow.SHARED_PREFS_NAME);
-        addPreferencesFromResource(R.xml.preferences);
+            getPreferenceManager().setSharedPreferencesName(HamsiWallpaperSlideshow.SHARED_PREFS_NAME);
+            addPreferencesFromResource(R.xml.preferences);
 
-        mPath = (ListPreference) findPreference(getString(
-                R.string.preferences_folder_key));
-        mPath.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                mPath.getDialog().hide();
-                Intent intent = new Intent(SettingsActivity.this, SelectFolderActivity.class);
-                startActivityForResult(intent, DIALOG_SELECT_ALBUM);
-                return true;
-            }
-        });
-
-/*        final CheckBoxPreference scroll = (CheckBoxPreference) findPreference(
-                getString(R.string.preferences_scroll_key));
-        scroll.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if ((Boolean)newValue) {
-                    new AlertDialog.Builder(mContext)
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setTitle(android.R.string.dialog_alert_title)
-                            .setMessage(R.string.warning_scroll)
-                            .setPositiveButton(android.R.string.ok, new OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .setNegativeButton(android.R.string.cancel, new OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    scroll.setChecked(false);
-                                }
-                            }).show();
+            mPath = (ListPreference) findPreference(getString(
+                    R.string.preferences_folder_key));
+            mPath.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    mPath.getDialog().hide();
+                    Intent intent = new Intent(SettingsActivity.this, SelectFolderActivity.class);
+                    startActivityForResult(intent, DIALOG_SELECT_ALBUM);
+                    return true;
                 }
-                return true;
-            }
-        });*/
+            });
+
+            checkForPermissions();
+        } catch (Exception ex) {
+            Log.e(TAG, "Got exception ", ex);
+        }
     }
 
     protected final void onActivityResult(final int requestCode,
@@ -97,4 +80,19 @@ public class SettingsActivity extends PreferenceActivity {
             }
         }
     }
+
+    protected void checkForPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                    checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 5);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+
+    }
+
 }

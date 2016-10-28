@@ -17,12 +17,14 @@
 
 package com.hamsiapps.hamsiwallpaperslideshow;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -50,6 +52,7 @@ import java.io.FileFilter;
 
 public class HamsiWallpaperSlideshow extends WallpaperService {
 
+    private static final String TAG = "HamsiWallpaperSlideshow";
     public static final String SHARED_PREFS_NAME = "preferences";
     public static final FileFilter ImageFilter = new FileFilter() {
         public boolean accept(File dir) {
@@ -206,8 +209,26 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
                     Environment.MEDIA_MOUNTED || Environment.getExternalStorageState() ==
                         Environment.MEDIA_CHECKING); */
                 setTouchEventsEnabled(mStorageReady);
+
+                checkForPermissions();
             } catch (Exception ex) {
                 Log.e("HamsiWallpaperSlideshow", "onCreate: ", ex);
+            }
+        }
+
+        protected void checkForPermissions() {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                            checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        Intent dialogIntent = new Intent(getBaseContext(),
+                                com.hamsiapps.hamsiwallpaperslideshow.SettingsActivity.class);
+                        dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getApplication().startActivity(dialogIntent);
+                    }
+                }
+            } catch (Exception ex) {
+                Log.e(TAG, "Got exception ", ex);
             }
         }
 
