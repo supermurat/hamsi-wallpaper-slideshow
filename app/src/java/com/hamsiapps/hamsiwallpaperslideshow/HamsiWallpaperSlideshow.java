@@ -219,7 +219,7 @@ public class HamsiWallpaperSlideshow extends WallpaperService {
         protected void checkForPermissions() {
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                    if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
                             checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         Intent dialogIntent = new Intent(getBaseContext(),
                                 com.hamsiapps.hamsiwallpaperslideshow.SettingsActivity.class);

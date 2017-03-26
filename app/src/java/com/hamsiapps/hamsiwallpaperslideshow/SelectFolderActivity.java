@@ -24,6 +24,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -31,9 +32,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -87,6 +91,8 @@ public class SelectFolderActivity extends ListActivity {
         }
     };
 
+    Exception lastException = null;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,6 +136,7 @@ public class SelectFolderActivity extends ListActivity {
             } catch (Exception ex) {
                 // Ignore and continue
                 Log.e(TAG, "BUG:doInBackground ", ex);
+                lastException = ex;
             }
             return new String[0];
         }
@@ -148,6 +155,7 @@ public class SelectFolderActivity extends ListActivity {
             } catch (Exception ex) {
                 // Ignore and continue
                 Log.e(TAG, "BUG:listDirectories ", ex);
+                lastException = ex;
             }
         }
 
@@ -163,6 +171,7 @@ public class SelectFolderActivity extends ListActivity {
                 } catch (Exception ex) {
                     // Ignore and continue
                     Log.e(TAG, "BUG:listDirectoriesThatHaveImages ", ex);
+                    lastException = ex;
                 }
             }
         }
@@ -177,7 +186,56 @@ public class SelectFolderActivity extends ListActivity {
                 final ListActivity activity = (ListActivity) mContext;
                 activity.setListAdapter(new FolderArrayAdapter(mContext,
                         R.layout.select_folder_list_item, result));
-            } else {
+            }
+            else if (lastException != null) {
+                try {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setCancelable(true);
+                    builder.setTitle("An error has occurred");
+                    builder.setMessage("Please report this bug");
+                    builder.setPositiveButton("Report Bug", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            try {
+                                String[] recipients = { "hisupermurat@gmail.com" };
+                                Intent email = new Intent(Intent.ACTION_SEND_MULTIPLE, Uri.parse("mailto:"));
+                                email.setType("message/rfc822");
+
+                                email.putExtra(Intent.EXTRA_EMAIL, recipients);
+                                email.putExtra(Intent.EXTRA_SUBJECT, "BUG:Hamsi Wallpaper Slideshow");
+                                email.putExtra(Intent.EXTRA_TEXT, stack2string(lastException));
+
+                                try {
+                                    mContext.startActivity(Intent.createChooser(email, "Choose an email client"));
+                                } catch (android.content.ActivityNotFoundException ex) {
+                                    Toast.makeText(mContext, "No email client", Toast.LENGTH_LONG).show();
+                                }
+                            } catch (Exception e) {
+                                Log.e(TAG, "BUG:onPostExecute:lastException:onClick ", e);
+                            }
+                            dialog.cancel();
+                            finish();
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                } catch (Exception e2) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
+                            .setTitle("An error has occurred")
+                            .setMessage("Please take a screenshot and send it to developer or make a comment on Google Play Store. Error : " + stack2string(lastException))
+                            .setNegativeButton("OK",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(final DialogInterface dialog,
+                                                            final int which) {
+                                            dialog.cancel();
+                                            finish();
+                                        }
+                                    }
+                            );
+                    builder.show();
+                }
+            }
+            else {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
                         .setTitle("No photos")
                         .setMessage("There were no folders containing photos found.")
@@ -203,5 +261,16 @@ public class SelectFolderActivity extends ListActivity {
             mProgressDialog.setCancelable(true);
         }
     }
+
+        public static String stack2string(Exception _e) {
+            try {
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                _e.printStackTrace(pw);
+                return sw.toString();
+            } catch (Exception e2) {
+                return "BUG:" + "Bad stack2string";
+            }
+        }
 
 }
