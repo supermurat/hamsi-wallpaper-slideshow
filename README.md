@@ -1,3 +1,5 @@
+# I need to focus on something else now on. So, this project is canceled!
+
 hamsi-wallpaper-slideshow
 =========================
 
